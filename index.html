@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -8,7 +9,9 @@
   <!-- Google Fonts: Fredoka (Comic/Collectible Display), Plus Jakarta Sans (Clean UI), Space Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Mono:wght@700&display=swap"
+    rel="stylesheet" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -119,36 +122,94 @@
        3. MOTION CHOREOGRAPHY & COMIC ANIMATIONS
        ========================================================================= */
     @keyframes screenEnter {
-      0% { opacity: 0; transform: translateY(20px) scale(0.95); }
-      70% { opacity: 1; transform: translateY(-3px) scale(1.01); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+
+      70% {
+        opacity: 1;
+        transform: translateY(-3px) scale(1.01);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
+
     .screen-enter {
       animation: screenEnter 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
     @keyframes boxWiggle {
-      0%, 100% { transform: rotate(0deg) translateY(0); }
-      15% { transform: rotate(-2.5deg) translateY(-3px); }
-      30% { transform: rotate(2.5deg) translateY(-1px); }
-      45% { transform: rotate(-1.5deg) translateY(-2px); }
-      60% { transform: rotate(1.5deg) translateY(0); }
-      75% { transform: rotate(0deg); }
+
+      0%,
+      100% {
+        transform: rotate(0deg) translateY(0);
+      }
+
+      15% {
+        transform: rotate(-2.5deg) translateY(-3px);
+      }
+
+      30% {
+        transform: rotate(2.5deg) translateY(-1px);
+      }
+
+      45% {
+        transform: rotate(-1.5deg) translateY(-2px);
+      }
+
+      60% {
+        transform: rotate(1.5deg) translateY(0);
+      }
+
+      75% {
+        transform: rotate(0deg);
+      }
     }
+
     .blind-box-wiggle {
       animation: boxWiggle 2.6s ease-in-out infinite;
     }
-    .blind-box-wiggle:nth-child(2n) { animation-delay: 0.35s; }
-    .blind-box-wiggle:nth-child(3n) { animation-delay: 0.7s; }
+
+    .blind-box-wiggle:nth-child(2n) {
+      animation-delay: 0.35s;
+    }
+
+    .blind-box-wiggle:nth-child(3n) {
+      animation-delay: 0.7s;
+    }
 
     @keyframes boxRipOpen {
-      0% { transform: scale(1) rotate(0deg); }
-      18% { transform: scale(1.1) rotate(-7deg); }
-      36% { transform: scale(1.14) rotate(7deg); }
-      54% { transform: scale(0.92) rotate(-4deg); }
-      76% { transform: scale(1.22) rotate(3deg); filter: brightness(1.18); }
-      100% { transform: scale(0.85) rotate(0deg); opacity: 0.35; }
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+
+      18% {
+        transform: scale(1.1) rotate(-7deg);
+      }
+
+      36% {
+        transform: scale(1.14) rotate(7deg);
+      }
+
+      54% {
+        transform: scale(0.92) rotate(-4deg);
+      }
+
+      76% {
+        transform: scale(1.22) rotate(3deg);
+        filter: brightness(1.18);
+      }
+
+      100% {
+        transform: scale(0.85) rotate(0deg);
+        opacity: 0.35;
+      }
     }
+
     .animate-box-rip {
       animation: boxRipOpen 0.56s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
       pointer-events: none;
@@ -159,78 +220,144 @@
         opacity: 0;
         transform: perspective(900px) rotateY(-88deg) scale(0.68) translateY(28px);
       }
+
       60% {
         opacity: 1;
         transform: perspective(900px) rotateY(10deg) scale(1.04) translateY(-4px);
       }
+
       82% {
         transform: perspective(900px) rotateY(-4deg) scale(0.99);
       }
+
       100% {
         opacity: 1;
         transform: perspective(900px) rotateY(0deg) scale(1) translateY(0);
       }
     }
+
     .animate-card-flip {
       animation: cardFlipReveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       transform-style: preserve-3d;
     }
 
     @keyframes speedlineSpin {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.06); }
-      100% { transform: rotate(360deg) scale(1); }
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+
+      50% {
+        transform: rotate(180deg) scale(1.06);
+      }
+
+      100% {
+        transform: rotate(360deg) scale(1);
+      }
     }
+
     .manga-speedlines {
-      background: repeating-conic-gradient(
-        from 0deg,
-        rgba(255, 255, 255, 0.22) 0deg 6deg,
-        transparent 6deg 16deg
-      );
+      background: repeating-conic-gradient(from 0deg,
+          rgba(255, 255, 255, 0.22) 0deg 6deg,
+          transparent 6deg 16deg);
       animation: speedlineSpin 14s linear infinite;
     }
 
     @keyframes pinDotPop {
-      0% { transform: scale(0.5); }
-      65% { transform: scale(1.3); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(0.5);
+      }
+
+      65% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
+
     .pin-dot-pop {
       animation: pinDotPop 0.26s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     @keyframes errorShake {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-10px) rotate(-2deg); }
-      40% { transform: translateX(10px) rotate(2deg); }
-      60% { transform: translateX(-7px) rotate(-1deg); }
-      80% { transform: translateX(7px) rotate(1deg); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-10px) rotate(-2deg);
+      }
+
+      40% {
+        transform: translateX(10px) rotate(2deg);
+      }
+
+      60% {
+        transform: translateX(-7px) rotate(-1deg);
+      }
+
+      80% {
+        transform: translateX(7px) rotate(1deg);
+      }
     }
+
     .animate-error-shake {
       animation: errorShake 0.42s ease-in-out;
     }
 
     @keyframes quizCardIn {
-      0% { opacity: 0; transform: translateX(42px) rotate(3deg) scale(0.94); }
-      100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateX(42px) rotate(3deg) scale(0.94);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg) scale(1);
+      }
     }
+
     @keyframes quizCardOut {
-      0% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
-      100% { opacity: 0; transform: translateX(-50px) rotate(-5deg) scale(0.9); }
+      0% {
+        opacity: 1;
+        transform: translateX(0) rotate(0deg) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(-50px) rotate(-5deg) scale(0.9);
+      }
     }
+
     .quiz-card-enter {
       animation: quizCardIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
+
     .quiz-card-exit {
       animation: quizCardOut 0.24s ease-in forwards;
       pointer-events: none;
     }
 
     @keyframes poofCloud {
-      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.4); }
-      60% { opacity: 0.85; transform: translate(-50%, -75%) scale(1.35); }
-      100% { opacity: 0; transform: translate(-50%, -100%) scale(1.7); }
+      0% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(0.4);
+      }
+
+      60% {
+        opacity: 0.85;
+        transform: translate(-50%, -75%) scale(1.35);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(1.7);
+      }
     }
+
     .poof-cloud {
       position: fixed;
       pointer-events: none;
@@ -240,9 +367,17 @@
     }
 
     @keyframes sparkleFloat {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
-      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(160deg); }
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(160deg);
+      }
     }
+
     .scratch-sparkle {
       position: absolute;
       pointer-events: none;
@@ -252,63 +387,117 @@
     }
 
     @keyframes stampSlam {
-      0% { opacity: 0; transform: scale(2.8) rotate(-25deg); }
-      65% { opacity: 1; transform: scale(0.88) rotate(-10deg); }
-      85% { transform: scale(1.06) rotate(-13deg); }
-      100% { opacity: 1; transform: scale(1) rotate(-12deg); }
+      0% {
+        opacity: 0;
+        transform: scale(2.8) rotate(-25deg);
+      }
+
+      65% {
+        opacity: 1;
+        transform: scale(0.88) rotate(-10deg);
+      }
+
+      85% {
+        transform: scale(1.06) rotate(-13deg);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(-12deg);
+      }
     }
+
     .animate-stamp-slam {
       animation: stampSlam 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
     }
 
     @keyframes shimmerSweep {
-      0% { transform: translateX(-140%) skewX(-20deg); }
-      100% { transform: translateX(240%) skewX(-20deg); }
+      0% {
+        transform: translateX(-140%) skewX(-20deg);
+      }
+
+      100% {
+        transform: translateX(240%) skewX(-20deg);
+      }
     }
+
     .foil-shimmer::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        transparent 100%
-      );
+      background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.5) 50%,
+          transparent 100%);
       animation: shimmerSweep 3.2s ease-in-out infinite;
       pointer-events: none;
     }
 
     @keyframes scanLaser {
-      0%, 100% { top: 8%; }
-      50% { top: 88%; }
+
+      0%,
+      100% {
+        top: 8%;
+      }
+
+      50% {
+        top: 88%;
+      }
     }
+
     .scanner-laser {
       animation: scanLaser 1.6s ease-in-out infinite;
     }
 
     @keyframes flameFlicker {
-      0%, 100% { transform: scale(1) rotate(-2deg); }
-      35% { transform: scale(1.09) rotate(3deg); }
-      70% { transform: scale(0.94) rotate(-1deg); }
+
+      0%,
+      100% {
+        transform: scale(1) rotate(-2deg);
+      }
+
+      35% {
+        transform: scale(1.09) rotate(3deg);
+      }
+
+      70% {
+        transform: scale(0.94) rotate(-1deg);
+      }
     }
+
     .candle-flame {
       animation: flameFlicker 0.6s ease-in-out infinite;
       transform-origin: bottom center;
     }
 
     @keyframes smokeRise {
-      0% { opacity: 0.85; transform: translateY(0) scale(0.6); }
-      100% { opacity: 0; transform: translateY(-34px) scale(1.45); }
+      0% {
+        opacity: 0.85;
+        transform: translateY(0) scale(0.6);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-34px) scale(1.45);
+      }
     }
+
     .candle-smoke {
       animation: smokeRise 1.1s ease-out forwards;
     }
 
     @keyframes floatSlow {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-9px) rotate(6deg); }
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-9px) rotate(6deg);
+      }
     }
+
     .float-charm {
       animation: floatSlow 4s ease-in-out infinite;
     }
@@ -322,6 +511,7 @@
       background: linear-gradient(90deg, #fecdd3 0%, var(--primary) 100%);
       outline: none;
     }
+
     input[type="range"].love-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -340,30 +530,48 @@
     }
 
     @keyframes envelopeFloat {
-      0%, 100% { transform: translateY(0px) rotate(-1deg); }
-      50% { transform: translateY(-6px) rotate(1deg); }
+
+      0%,
+      100% {
+        transform: translateY(0px) rotate(-1deg);
+      }
+
+      50% {
+        transform: translateY(-6px) rotate(1deg);
+      }
     }
+
     .envelope-float {
       animation: envelopeFloat 3s ease-in-out infinite;
     }
 
     @keyframes welcomeDismiss {
-      0% { opacity: 1; transform: scale(1) translateY(0); }
-      100% { opacity: 0; transform: scale(1.08) translateY(-18px); }
+      0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1.08) translateY(-18px);
+      }
     }
+
     .welcome-dismiss {
       animation: welcomeDismiss 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       pointer-events: none;
     }
   </style>
 </head>
+
 <body class="theme-birthday min-h-screen flex flex-col justify-between font-sans selection:bg-amber-200">
 
   <!-- Native HTML5 Audio Element (100% anti-blokir di HP Android, iOS Safari & Browser TikTok/IG saat deploy) -->
   <audio id="bgm-audio-element" loop preload="auto" playsinline></audio>
 
   <!-- Real Music YouTube Player (berada di dalam area viewport dengan opacity sangat kecil agar tidak diblokir Chrome/Safari) -->
-  <div class="fixed bottom-2 right-2 w-[200px] h-[113px] opacity-[0.01] pointer-events-none overflow-hidden z-0" aria-hidden="true">
+  <div class="fixed bottom-2 right-2 w-[200px] h-[113px] opacity-[0.01] pointer-events-none overflow-hidden z-0"
+    aria-hidden="true">
     <div id="yt-bgm-player"></div>
   </div>
 
@@ -376,23 +584,30 @@
   <!-- =========================================================================
        INITIAL GREETING CARD POPUP (UNLOCKS LOOPED BGM ON FIRST TAP)
        ========================================================================= -->
-  <div id="welcome-card-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/75 backdrop-blur-sm">
-    <div id="welcome-card-box" class="screen-enter w-full max-w-sm comic-panel p-5 sm:p-6 bg-white text-center relative overflow-hidden">
+  <div id="welcome-card-modal"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/75 backdrop-blur-sm">
+    <div id="welcome-card-box"
+      class="screen-enter w-full max-w-sm comic-panel p-5 sm:p-6 bg-white text-center relative overflow-hidden">
       <!-- Top Decorative Ribbon -->
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-zinc-900 font-mono text-[10px] font-bold uppercase tracking-wider mb-3" style="background-color: var(--accent-soft);">
+      <div
+        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-zinc-900 font-mono text-[10px] font-bold uppercase tracking-wider mb-3"
+        style="background-color: var(--accent-soft);">
         <span>💌</span>
         <span>SPECIAL GREETING CARD</span>
       </div>
 
       <!-- Greeting Card Illustration -->
-      <div class="envelope-float w-32 h-32 mx-auto my-2 rounded-2xl border-[2.5px] border-zinc-900 overflow-hidden shadow-sm bg-amber-50 flex items-center justify-center" id="welcome-card-art">
+      <div
+        class="envelope-float w-32 h-32 mx-auto my-2 rounded-2xl border-[2.5px] border-zinc-900 overflow-hidden shadow-sm bg-amber-50 flex items-center justify-center"
+        id="welcome-card-art">
         <svg viewBox="0 0 160 160" class="w-full h-full">
-          <rect width="160" height="160" fill="#fef3c7"/>
-          <rect x="22" y="42" width="116" height="82" rx="12" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
-          <path d="M22 48 L80 90 L138 48" fill="none" stroke="#18181b" stroke-width="4" stroke-linejoin="round"/>
-          <circle cx="80" cy="86" r="16" fill="#ef4444" stroke="#18181b" stroke-width="3.5"/>
+          <rect width="160" height="160" fill="#fef3c7" />
+          <rect x="22" y="42" width="116" height="82" rx="12" fill="#ffffff" stroke="#18181b" stroke-width="4" />
+          <path d="M22 48 L80 90 L138 48" fill="none" stroke="#18181b" stroke-width="4" stroke-linejoin="round" />
+          <circle cx="80" cy="86" r="16" fill="#ef4444" stroke="#18181b" stroke-width="3.5" />
           <text x="80" y="92" text-anchor="middle" font-size="16">💖</text>
-          <text x="80" y="28" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="14" fill="#18181b">UNTUK KAMU ✨</text>
+          <text x="80" y="28" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="14"
+            fill="#18181b">UNTUK KAMU ✨</text>
         </svg>
       </div>
 
@@ -406,13 +621,16 @@
       </p>
 
       <!-- Soundtrack Preview Pill -->
-      <div class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-zinc-100 border border-zinc-300 text-[11px] font-mono text-zinc-700 mb-4">
+      <div
+        class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-zinc-100 border border-zinc-300 text-[11px] font-mono text-zinc-700 mb-4">
         <span class="animate-pulse">🎵</span>
         <span id="welcome-track-label" class="truncate font-bold">MMG (My Mine Gueh) - Naykilla</span>
       </div>
 
       <!-- Primary User-Gesture Button to Start Looped Audio & Enter -->
-      <button onclick="openWelcomeGreetingCard()" class="comic-btn w-full py-3.5 px-4 rounded-2xl text-white font-display font-bold text-sm sm:text-base tracking-wide flex items-center justify-center gap-2" style="background-color: var(--primary);">
+      <button onclick="openWelcomeGreetingCard()"
+        class="comic-btn w-full py-3.5 px-4 rounded-2xl text-white font-display font-bold text-sm sm:text-base tracking-wide flex items-center justify-center gap-2"
+        style="background-color: var(--primary);">
         <span>💌</span>
         <span>BUKA KARTU & PUTAR MUSIK</span>
       </button>
@@ -439,7 +657,8 @@
 
       <!-- Audio Play/Pause Toggle -->
       <div class="flex items-center shrink-0">
-        <button id="btn-audio-toggle" onclick="toggleAudio()" title="Putar / Hentikan Musik" class="comic-btn px-3 py-1.5 rounded-xl bg-amber-300 text-xs font-bold flex items-center gap-1.5">
+        <button id="btn-audio-toggle" onclick="toggleAudio()" title="Putar / Hentikan Musik"
+          class="comic-btn px-3 py-1.5 rounded-xl bg-amber-300 text-xs font-bold flex items-center gap-1.5">
           <span id="audio-icon">🔇</span>
           <span id="audio-label">Play BGM</span>
         </button>
@@ -458,7 +677,9 @@
     <section id="screen-1" class="screen-enter w-full">
       <div class="comic-panel p-5 sm:p-6 text-center relative overflow-hidden">
         <!-- Comic Top Strip -->
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider border-2 border-zinc-900 mb-3" style="background-color: var(--accent-soft);">
+        <div
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider border-2 border-zinc-900 mb-3"
+          style="background-color: var(--accent-soft);">
           <span>🔒</span>
           <span>EDITION 01 • SECRET CAPSULE</span>
         </div>
@@ -467,41 +688,65 @@
           Kidult Surprise Box: Level 22
         </h1>
         <p id="s1-subtitle" class="text-xs sm:text-sm text-zinc-600 mb-4">
-          Masukkan <span class="font-bold text-zinc-900">4-digit PIN rahasia</span> untuk menyalakan mesin gacha & musik kejutan!
+          Masukkan <span class="font-bold text-zinc-900">4-digit PIN rahasia</span> untuk menyalakan mesin gacha & musik
+          kejutan!
         </p>
 
         <!-- PIN Hint Pill -->
-        <button onclick="fillHintPin()" class="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 border border-dashed border-zinc-400 text-[11px] font-mono text-zinc-700 transition">
+        <button onclick="fillHintPin()"
+          class="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 border border-dashed border-zinc-400 text-[11px] font-mono text-zinc-700 transition">
           <span>💡 Petunjuk PIN:</span>
           <span id="s1-pin-hint" class="font-bold text-zinc-900 underline">2004 (Ketuk isi otomatis)</span>
         </button>
 
         <!-- 4-Digit PIN Display Boxes -->
         <div id="pin-dots-container" class="flex justify-center gap-3 mb-5">
-          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-0">•</div>
-          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-1">•</div>
-          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-2">•</div>
-          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-3">•</div>
+          <div
+            class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner"
+            id="pin-dot-0">•</div>
+          <div
+            class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner"
+            id="pin-dot-1">•</div>
+          <div
+            class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner"
+            id="pin-dot-2">•</div>
+          <div
+            class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner"
+            id="pin-dot-3">•</div>
         </div>
 
         <!-- Tactile Numeric Keypad -->
         <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto mb-4">
-          <button onclick="pressPinDigit('1')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">1</button>
-          <button onclick="pressPinDigit('2')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">2</button>
-          <button onclick="pressPinDigit('3')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">3</button>
-          <button onclick="pressPinDigit('4')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">4</button>
-          <button onclick="pressPinDigit('5')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">5</button>
-          <button onclick="pressPinDigit('6')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">6</button>
-          <button onclick="pressPinDigit('7')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">7</button>
-          <button onclick="pressPinDigit('8')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">8</button>
-          <button onclick="pressPinDigit('9')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">9</button>
-          <button onclick="clearPin()" class="comic-btn h-12 rounded-2xl bg-rose-100 hover:bg-rose-200 font-display font-bold text-xs uppercase text-rose-700">Clear</button>
-          <button onclick="pressPinDigit('0')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">0</button>
-          <button onclick="backspacePin()" class="comic-btn h-12 rounded-2xl bg-amber-100 hover:bg-amber-200 font-display font-bold text-lg">⌫</button>
+          <button onclick="pressPinDigit('1')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">1</button>
+          <button onclick="pressPinDigit('2')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">2</button>
+          <button onclick="pressPinDigit('3')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">3</button>
+          <button onclick="pressPinDigit('4')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">4</button>
+          <button onclick="pressPinDigit('5')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">5</button>
+          <button onclick="pressPinDigit('6')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">6</button>
+          <button onclick="pressPinDigit('7')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">7</button>
+          <button onclick="pressPinDigit('8')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">8</button>
+          <button onclick="pressPinDigit('9')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">9</button>
+          <button onclick="clearPin()"
+            class="comic-btn h-12 rounded-2xl bg-rose-100 hover:bg-rose-200 font-display font-bold text-xs uppercase text-rose-700">Clear</button>
+          <button onclick="pressPinDigit('0')"
+            class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">0</button>
+          <button onclick="backspacePin()"
+            class="comic-btn h-12 rounded-2xl bg-amber-100 hover:bg-amber-200 font-display font-bold text-lg">⌫</button>
         </div>
 
         <!-- Primary Unlock CTA -->
-        <button onclick="verifyPinAndEnter()" class="comic-btn w-full py-3.5 rounded-2xl text-white font-display font-bold text-base tracking-wide flex items-center justify-center gap-2" style="background-color: var(--primary);">
+        <button onclick="verifyPinAndEnter()"
+          class="comic-btn w-full py-3.5 rounded-2xl text-white font-display font-bold text-base tracking-wide flex items-center justify-center gap-2"
+          style="background-color: var(--primary);">
           <span>BUKA MESIN BLIND BOX</span>
           <span>⚡</span>
         </button>
@@ -516,7 +761,8 @@
         <!-- Header Status -->
         <div class="flex items-center justify-between gap-2 mb-3">
           <div>
-            <span class="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-zinc-900 text-white">STEP 02 • UNBOXING</span>
+            <span class="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-zinc-900 text-white">STEP 02 •
+              UNBOXING</span>
             <h2 class="font-display font-bold text-xl sm:text-2xl mt-0.5">Pilih Kotak Misteri</h2>
           </div>
           <div class="comic-panel-sm px-3 py-1.5 text-center bg-amber-50">
@@ -526,7 +772,8 @@
         </div>
 
         <p class="text-xs text-zinc-600 mb-3.5">
-          Ketuk semua kotak untuk mengoleksi kartu kenangan & temukan kartu <span class="font-bold text-amber-600">SECRET 1:144</span> berlapis gosok!
+          Ketuk semua kotak untuk mengoleksi kartu kenangan & temukan kartu <span
+            class="font-bold text-amber-600">SECRET 1:144</span> berlapis gosok!
         </p>
 
         <!-- 6 Blind Boxes Grid -->
@@ -535,7 +782,8 @@
         </div>
 
         <!-- Proceed to Quiz CTA -->
-        <button id="btn-proceed-quiz" onclick="goToQuizScreen()" disabled class="comic-btn w-full py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed bg-zinc-900 text-white">
+        <button id="btn-proceed-quiz" onclick="goToQuizScreen()" disabled
+          class="comic-btn w-full py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed bg-zinc-900 text-white">
           <span>LANJUT KE UJI KELAYAKAN</span>
           <span>➡️</span>
         </button>
@@ -552,7 +800,8 @@
       <div class="comic-panel p-5 sm:p-6 relative overflow-visible">
         <!-- Quiz Progress Header -->
         <div class="flex items-center justify-between mb-3">
-          <span id="quiz-step-badge" class="font-mono text-xs font-bold px-2.5 py-1 rounded-lg border-2 border-zinc-900 bg-amber-200">
+          <span id="quiz-step-badge"
+            class="font-mono text-xs font-bold px-2.5 py-1 rounded-lg border-2 border-zinc-900 bg-amber-200">
             SOAL 1 / 5
           </span>
           <span id="quiz-mode-label" class="font-mono text-[11px] font-bold text-zinc-500 uppercase">
@@ -562,7 +811,8 @@
 
         <!-- Progress Bar -->
         <div class="w-full h-3 bg-zinc-100 rounded-full border-2 border-zinc-900 overflow-hidden mb-5">
-          <div id="quiz-progress-fill" class="h-full transition-all duration-300" style="width: 20%; background-color: var(--primary);"></div>
+          <div id="quiz-progress-fill" class="h-full transition-all duration-300"
+            style="width: 20%; background-color: var(--primary);"></div>
         </div>
 
         <!-- Question Card Stage -->
@@ -583,21 +833,25 @@
         </div>
         <h2 class="font-display font-bold text-2xl mb-4">Menganalisis Kelayakan...</h2>
 
-        <div class="relative w-44 h-44 mx-auto rounded-3xl border-[3px] border-zinc-900 bg-zinc-950 overflow-hidden flex items-center justify-center mb-4">
+        <div
+          class="relative w-44 h-44 mx-auto rounded-3xl border-[3px] border-zinc-900 bg-zinc-950 overflow-hidden flex items-center justify-center mb-4">
           <span class="text-6xl animate-pulse">🪪</span>
           <div class="scanner-laser absolute left-0 right-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399]"></div>
           <div class="absolute inset-0 border-2 border-emerald-400/30 rounded-3xl"></div>
         </div>
 
         <div class="w-full max-w-xs mx-auto h-3 bg-zinc-100 rounded-full border-2 border-zinc-900 overflow-hidden mb-2">
-          <div id="scanner-progress-bar" class="h-full bg-emerald-400 transition-all duration-150" style="width: 0%;"></div>
+          <div id="scanner-progress-bar" class="h-full bg-emerald-400 transition-all duration-150" style="width: 0%;">
+          </div>
         </div>
-        <p id="scanner-status" class="font-mono text-xs text-zinc-600">Memverifikasi koleksi kartu & kejujuran jawaban...</p>
+        <p id="scanner-status" class="font-mono text-xs text-zinc-600">Memverifikasi koleksi kartu & kejujuran
+          jawaban...</p>
       </div>
 
       <!-- Final Certificate Sub-state -->
       <div id="certificate-view" class="hidden screen-enter">
-        <div id="certificate-tilt-card" class="tilt-card foil-shimmer comic-panel p-5 sm:p-6 bg-white relative overflow-hidden mb-3.5">
+        <div id="certificate-tilt-card"
+          class="tilt-card foil-shimmer comic-panel p-5 sm:p-6 bg-white relative overflow-hidden mb-3.5">
           <!-- Decorative Corner Ribbons -->
           <div class="flex items-center justify-between border-b-2 border-dashed border-zinc-300 pb-3 mb-3">
             <div class="flex items-center gap-2">
@@ -610,29 +864,34 @@
               </div>
             </div>
             <!-- Animated Impact Stamp -->
-            <div id="cert-stamp-badge" class="animate-stamp-slam px-2.5 py-1 rounded-lg border-2 border-emerald-700 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs">
+            <div id="cert-stamp-badge"
+              class="animate-stamp-slam px-2.5 py-1 rounded-lg border-2 border-emerald-700 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs">
               GRADE A+
             </div>
           </div>
 
           <!-- Collector Profile & Score -->
           <div class="flex items-center gap-3.5 bg-zinc-50 p-3 rounded-2xl border-2 border-zinc-900 mb-3.5">
-            <div id="cert-photo-thumb" class="w-16 h-16 rounded-xl border-2 border-zinc-900 overflow-hidden shrink-0 bg-amber-100 flex items-center justify-center">
+            <div id="cert-photo-thumb"
+              class="w-16 h-16 rounded-xl border-2 border-zinc-900 overflow-hidden shrink-0 bg-amber-100 flex items-center justify-center">
               <!-- Populated SVG Avatar -->
             </div>
             <div class="min-w-0 flex-1">
               <div class="font-mono text-[10px] text-zinc-500 uppercase">NAMA KOLEKTOR / PENERIMA</div>
               <div id="cert-recipient-name" class="font-display font-bold text-lg truncate">Birthday Star</div>
               <div class="flex items-center gap-2 mt-1">
-                <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-200 border border-zinc-900">6/6 Kartu Lengkap</span>
-                <span class="text-xs font-bold px-2 py-0.5 rounded bg-rose-200 border border-zinc-900">Secret Unlocked</span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-200 border border-zinc-900">6/6 Kartu
+                  Lengkap</span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-rose-200 border border-zinc-900">Secret
+                  Unlocked</span>
               </div>
             </div>
           </div>
 
           <!-- Score & Grade Grid -->
           <div class="grid grid-cols-2 gap-2.5 mb-3.5">
-            <div class="p-3 rounded-2xl border-2 border-zinc-900 text-center" style="background-color: var(--accent-soft);">
+            <div class="p-3 rounded-2xl border-2 border-zinc-900 text-center"
+              style="background-color: var(--accent-soft);">
               <div class="font-mono text-[10px] font-bold text-zinc-600">PREDIKAT KELULUSAN</div>
               <div id="cert-grade-text" class="font-display font-bold text-3xl text-zinc-900">A+</div>
             </div>
@@ -645,7 +904,8 @@
           <!-- Official Verdict Quote -->
           <div class="p-3 rounded-xl bg-zinc-900 text-white text-xs leading-relaxed mb-3">
             <span class="font-mono text-[10px] text-amber-300 block mb-0.5">CATATAN RESMI KURATOR:</span>
-            <p id="cert-verdict-quote">"Resmi naik level dengan pesona maksimal, selera humor grade A+, dan dikelilingi orang-orang tersayang!"</p>
+            <p id="cert-verdict-quote">"Resmi naik level dengan pesona maksimal, selera humor grade A+, dan dikelilingi
+              orang-orang tersayang!"</p>
           </div>
 
           <!-- Serial Number & Date Stamp -->
@@ -657,11 +917,14 @@
 
         <!-- Action Buttons: Download HD PNG & Replay -->
         <div class="grid grid-cols-2 gap-2.5">
-          <button onclick="downloadCertificatePNG()" class="comic-btn py-3.5 px-3 rounded-2xl text-white font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5" style="background-color: var(--primary);">
+          <button onclick="downloadCertificatePNG()"
+            class="comic-btn py-3.5 px-3 rounded-2xl text-white font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5"
+            style="background-color: var(--primary);">
             <span>📥</span>
             <span>UNDUH SERTIFIKAT HD</span>
           </button>
-          <button onclick="resetExperience(true)" class="comic-btn py-3.5 px-3 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5">
+          <button onclick="resetExperience(true)"
+            class="comic-btn py-3.5 px-3 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5">
             <span>🔄</span>
             <span>MAIN LAGI</span>
           </button>
@@ -676,34 +939,40 @@
        ========================================================================= -->
   <div id="card-reveal-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <!-- Backdrop + Manga Speedlines -->
-    <div id="modal-backdrop" class="absolute inset-0 bg-zinc-950/75 backdrop-blur-xs transition-opacity duration-300" onclick="closeCardModal()"></div>
+    <div id="modal-backdrop" class="absolute inset-0 bg-zinc-950/75 backdrop-blur-xs transition-opacity duration-300"
+      onclick="closeCardModal()"></div>
     <div id="modal-speedlines" class="manga-speedlines absolute inset-0 pointer-events-none opacity-80"></div>
 
     <!-- Collector Card Container -->
-    <div id="modal-tilt-card" class="tilt-card animate-card-flip relative z-10 w-full max-w-sm comic-panel p-4 sm:p-5 bg-white">
+    <div id="modal-tilt-card"
+      class="tilt-card animate-card-flip relative z-10 w-full max-w-sm comic-panel p-4 sm:p-5 bg-white">
       <!-- Top Rarity Header -->
       <div class="flex items-center justify-between gap-2 mb-3">
-        <span id="modal-rarity-badge" class="px-3 py-1 rounded-full border-2 border-zinc-900 font-mono font-bold text-xs uppercase bg-amber-300">
+        <span id="modal-rarity-badge"
+          class="px-3 py-1 rounded-full border-2 border-zinc-900 font-mono font-bold text-xs uppercase bg-amber-300">
           COMMON • 1:6
         </span>
         <span id="modal-box-number" class="font-mono text-xs font-bold text-zinc-500">BOX #01</span>
       </div>
 
       <!-- Card Visual Stage (Normal Card OR Screen 3 Scratch-to-Reveal) -->
-      <div id="modal-card-visual-stage" class="relative w-full aspect-square rounded-2xl border-[2.5px] border-zinc-900 overflow-hidden bg-zinc-100 mb-3.5 select-none">
+      <div id="modal-card-visual-stage"
+        class="relative w-full aspect-square rounded-2xl border-[2.5px] border-zinc-900 overflow-hidden bg-zinc-100 mb-3.5 select-none">
         <!-- Standard Illustration Container -->
         <div id="modal-illustration-frame" class="w-full h-full"></div>
 
         <!-- Screen 3: Scratch-to-Reveal Overlay (Active only on Box #6 SECRET) -->
         <div id="scratch-wrapper" class="hidden absolute inset-0">
           <!-- Underlying Secret Content -->
-          <div id="scratch-reveal-content" class="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-gradient-to-br from-amber-100 via-rose-100 to-purple-100">
+          <div id="scratch-reveal-content"
+            class="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-gradient-to-br from-amber-100 via-rose-100 to-purple-100">
             <!-- Populated dynamically with Secret SVG + Special Note -->
           </div>
           <!-- Metallic Silver Foil Scratch Canvas -->
           <canvas id="scratch-canvas" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
           <!-- Scratch Hint Pill -->
-          <div id="scratch-progress-pill" class="pointer-events-none absolute bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-zinc-900/90 text-white font-mono text-[11px] whitespace-nowrap shadow-md">
+          <div id="scratch-progress-pill"
+            class="pointer-events-none absolute bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-zinc-900/90 text-white font-mono text-[11px] whitespace-nowrap shadow-md">
             ✨ Gosok layar foil (<span id="scratch-pct-text">0%</span>)
           </div>
           <!-- Scratch Sparkle Layer -->
@@ -720,7 +989,9 @@
       </div>
 
       <!-- Collect & Close Button -->
-      <button id="btn-collect-card" onclick="closeCardModal()" class="comic-btn w-full mt-4 py-3 rounded-2xl text-white font-display font-bold text-sm" style="background-color: var(--accent);">
+      <button id="btn-collect-card" onclick="closeCardModal()"
+        class="comic-btn w-full mt-4 py-3 rounded-2xl text-white font-display font-bold text-sm"
+        style="background-color: var(--accent);">
         Simpan ke Koleksi ✓
       </button>
     </div>
@@ -729,9 +1000,12 @@
   <!-- =========================================================================
        MODAL: LILIN HARAPAN BANDEL (STUBBORN BIRTHDAY CANDLE BLACKOUT)
        ========================================================================= -->
-  <div id="candle-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/95 transition-opacity duration-500">
-    <div class="w-full max-w-sm text-center text-white p-5 rounded-3xl border-2 border-amber-400/40 bg-zinc-900/90 shadow-[0_0_50px_rgba(245,158,11,0.22)]">
-      <div class="inline-block px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400 text-amber-300 font-mono text-[11px] mb-2">
+  <div id="candle-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/95 transition-opacity duration-500">
+    <div
+      class="w-full max-w-sm text-center text-white p-5 rounded-3xl border-2 border-amber-400/40 bg-zinc-900/90 shadow-[0_0_50px_rgba(245,158,11,0.22)]">
+      <div
+        class="inline-block px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400 text-amber-300 font-mono text-[11px] mb-2">
         🕯️ RITUAL LILIN HARAPAN BANDEL
       </div>
       <h3 class="font-display font-bold text-2xl mb-1">Make a Wish & Tiup Lilinnya!</h3>
@@ -742,7 +1016,8 @@
       <!-- Vector Birthday Cake & Animated Flame -->
       <div class="relative w-52 h-48 mx-auto mb-5 flex flex-col items-center justify-end">
         <!-- Ambient Glow -->
-        <div id="candle-glow" class="absolute top-2 w-28 h-28 rounded-full bg-amber-400/30 blur-xl transition-opacity duration-200"></div>
+        <div id="candle-glow"
+          class="absolute top-2 w-28 h-28 rounded-full bg-amber-400/30 blur-xl transition-opacity duration-200"></div>
 
         <!-- Flame SVG -->
         <div id="candle-flame" class="candle-flame relative z-20 mb-[-4px] transition-all duration-150">
@@ -762,7 +1037,9 @@
           <path d="M83 12 L97 18 M83 22 L97 28" stroke="#ef4444" stroke-width="3" />
           <!-- Top Cake Layer -->
           <rect x="35" y="34" width="110" height="34" rx="12" fill="#fbcfe8" stroke="#18181b" stroke-width="3" />
-          <path d="M35 46 Q50 56 63 46 Q76 56 90 46 Q104 56 117 46 Q130 56 145 46 L145 38 Q145 34 135 34 L45 34 Q35 34 35 38 Z" fill="#fff" stroke="#18181b" stroke-width="2.5" />
+          <path
+            d="M35 46 Q50 56 63 46 Q76 56 90 46 Q104 56 117 46 Q130 56 145 46 L145 38 Q145 34 135 34 L45 34 Q35 34 35 38 Z"
+            fill="#fff" stroke="#18181b" stroke-width="2.5" />
           <!-- Bottom Cake Layer -->
           <rect x="20" y="66" width="140" height="38" rx="14" fill="#fde68a" stroke="#18181b" stroke-width="3" />
           <!-- Plate -->
@@ -778,15 +1055,18 @@
         Percobaan Tiupan: 0 / 3
       </div>
 
-      <button id="btn-blow-candle" onclick="blowStubbornCandle()" class="comic-btn w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-display font-bold text-base">
+      <button id="btn-blow-candle" onclick="blowStubbornCandle()"
+        class="comic-btn w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-display font-bold text-base">
         🌬️ TIUP LILIN SEKARANG!
       </button>
     </div>
   </div>
 
   <!-- Custom Toast Notification (Replaces alert()) -->
-  <div id="toast-banner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-3">
-    <div id="toast-text" class="comic-panel-sm px-4 py-2 bg-zinc-900 text-white font-sans font-semibold text-xs sm:text-sm whitespace-nowrap">
+  <div id="toast-banner"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-3">
+    <div id="toast-text"
+      class="comic-panel-sm px-4 py-2 bg-zinc-900 text-white font-sans font-semibold text-xs sm:text-sm whitespace-nowrap">
       Notifikasi
     </div>
   </div>
@@ -798,7 +1078,7 @@
     // =========================================================================
     // 1. FLAT COLLECTOR CARD VECTOR ARTWORK GENERATOR (MANGA / POP-ART STYLE)
     // =========================================================================
-    function buildCollectorIllustration(artType, accentHex = '#f59e0b') {
+    function buildCollectorIllustration(artType, accentHex = '#f59e0b', photoUrl = '') {
       const artworks = {
         baby_photo: `
           <svg viewBox="0 0 240 240" class="w-full h-full">
@@ -915,7 +1195,16 @@
         `
       };
 
-      return artworks[artType] || artworks.golden_wish;
+      const fallbackSvg = artworks[artType] || artworks.golden_wish;
+      if (photoUrl && photoUrl.trim() !== '') {
+        return `
+          <div class="relative w-full h-full">
+            ${fallbackSvg}
+            <img src="${photoUrl.trim()}" alt="Foto Kartu Koleksi" class="absolute inset-0 w-full h-full object-cover" onerror="this.remove()" />
+          </div>
+        `;
+      }
+      return fallbackSvg;
     }
 
     // =========================================================================
@@ -933,6 +1222,7 @@
         certTitle: 'KARTU KOLEKTOR ULANG TAHUN',
         certQuote: '"Resmi naik level dengan pesona maksimal, selera humor grade A+, dan dikelilingi orang-orang tersayang!"',
         thumbArt: 'golden_wish',
+        thumbPhotoUrl: 'https://i.pinimg.com/736x/00/a1/f2/00a1f2ebc2996b42e63d538c4016574b.jpg', // <-- Ganti foto profil kecil di sertifikat akhir (mis. './foto-profil.jpg')
         charms: ['🎂', '🎁', '🎈', '✨', '🥳', '⭐'],
         boxes: [
           {
@@ -941,6 +1231,7 @@
             rarity: 'COMMON • 1:6',
             rarityBg: '#e4e4e7',
             art: 'baby_photo',
+            photoUrl: 'https://i.pinimg.com/736x/f1/ac/77/f1ac77f39e401453ee2af484c071139e.jpg', // <-- Ganti foto Kotak 1 (mis. './foto-1.jpg' atau 'https://...')
             title: 'Arsip Bocil Legendaris',
             note: 'Bukti autentik bahwa sejak kecil aura bintang utamanya sudah tidak terbantahkan lagi!'
           },
@@ -950,6 +1241,7 @@
             rarity: 'COMMON • 1:6',
             rarityBg: '#e4e4e7',
             art: 'silly_selfie',
+            photoUrl: 'https://i.pinimg.com/736x/01/c9/01/01c9018f1ae7a9b682e46f6aa1153358.jpg',// <-- Ganti foto Kotak 2
             title: 'Koleksi Aib Tanpa Filter',
             note: 'Momen ketawa paling lepas tanpa jaim—karena sahabat sejati menyimpan foto aib sebagai bentuk kasih sayang.'
           },
@@ -959,6 +1251,7 @@
             rarity: 'RARE • 1:24',
             rarityBg: '#bae6fd',
             art: 'midnight_karaoke',
+            photoUrl: 'https://i.pinimg.com/736x/f2/17/06/f21706788fe2d1396c97e35ec5a2c6bc.jpg', // <-- Ganti foto Kotak 3
             title: 'Konser Dadakan Tengah Malam',
             note: 'Playlist wajib dan sesi curhat random yang selalu sukses bikin lupa capek.'
           },
@@ -968,6 +1261,7 @@
             rarity: 'RARE • 1:24',
             rarityBg: '#bae6fd',
             art: 'cake_disaster',
+            photoUrl: 'https://i.pinimg.com/736x/15/75/c5/1575c55f360ba45ae8ae11c8b429e9c1.jpg', // <-- Ganti foto Kotak 4
             title: 'Tragedi Krim Kue',
             note: 'Setiap ulang tahun selalu punya cerita seru yang bakal terus dikenang sampai puluhan tahun ke depan.'
           },
@@ -977,6 +1271,7 @@
             rarity: 'ULTRA RARE • 1:72',
             rarityBg: '#fde047',
             art: 'gift_voucher',
+            photoUrl: 'https://i.pinimg.com/736x/ae/3a/72/ae3a72bf4420bd09842f224c0f555eb6.jpg', // <-- Ganti foto Kotak 5
             title: 'Voucher Traktiran Bebas Pilih',
             note: 'Kartu sakti yang bisa diklaim 1x untuk jajanan atau kopi favoritmu hari ini!'
           },
@@ -986,6 +1281,7 @@
             rarity: 'SECRET • 1:144',
             rarityBg: '#fda4af',
             art: 'golden_wish',
+            photoUrl: 'https://i.pinimg.com/1200x/60/68/65/606865fb65d592c8b93d15d2e4728d52.jpg', // <-- Ganti foto rahasia di balik lapisan gosok Kotak 6 (SECRET)
             title: 'Kado Utama & Doa Terbaik ✨',
             note: 'Selamat ulang tahun! Semoga setiap langkah di usia baru ini dimudahkan, sehat selalu, dan semua wish list tahun ini terwujud satu per satu!',
             isSecret: true
@@ -1031,6 +1327,7 @@
         certTitle: 'RAPOR KELULUSAN PACAR GRADE A+',
         certQuote: '"Terbukti lolos uji kesabaran, kepekaan, dan kelucuan tanpa cela. Kontrak sayang otomatis diperpanjang seumur hidup!"',
         thumbArt: 'first_date',
+        thumbPhotoUrl: '',
         charms: ['💖', '💌', '🧸', '✨', '🍓', '💘'],
         boxes: [
           {
@@ -1039,6 +1336,7 @@
             rarity: 'COMMON • 1:6',
             rarityBg: '#e4e4e7',
             art: 'first_date',
+            photoUrl: '',
             title: 'Kencan Pertama Masih Canggung',
             note: 'Dari yang awalnya masih malu-malu, sekarang sudah jadi rumah paling nyaman buat cerita apa saja.'
           },
@@ -1048,6 +1346,7 @@
             rarity: 'COMMON • 1:6',
             rarityBg: '#e4e4e7',
             art: 'goofy_duo',
+            photoUrl: '',
             title: 'Mode Konyol Tanpa Jaim',
             note: 'Terima kasih sudah selalu bisa diajak bercanda receh di tengah hari yang padat.'
           },
@@ -1057,6 +1356,7 @@
             rarity: 'RARE • 1:24',
             rarityBg: '#bae6fd',
             art: 'midnight_karaoke',
+            photoUrl: '',
             title: 'Soundtrack Perjalanan Kita',
             note: 'Setiap lagu yang kita putar bareng selalu punya cerita kecil yang bikin senyum sendiri.'
           },
@@ -1066,6 +1366,7 @@
             rarity: 'RARE • 1:24',
             rarityBg: '#bae6fd',
             art: 'cake_disaster',
+            photoUrl: '',
             title: 'Debat Mau Makan Apa',
             note: 'Pertanyaan klasik "terserah" yang ujung-ujungnya tetap selalu nemu tempat favorit berdua.'
           },
@@ -1075,6 +1376,7 @@
             rarity: 'ULTRA RARE • 1:72',
             rarityBg: '#fde047',
             art: 'gift_voucher',
+            photoUrl: '',
             title: 'Golden Date Night Pass',
             note: 'Kupon kencan spesial bebas request destinasi & menu favoritmu minggu ini!'
           },
@@ -1084,6 +1386,7 @@
             rarity: 'SECRET • 1:144',
             rarityBg: '#fda4af',
             art: 'golden_wish',
+            photoUrl: '',
             title: 'Surat Cinta Rahasia 1:144 💌',
             note: 'Terima kasih sudah bertahan, bertumbuh, dan terus memilih aku setiap hari. Selamat merayakan chapter baru kita!',
             isSecret: true
@@ -1124,6 +1427,7 @@
         certTitle: 'SERTIFIKAT RESMI PASANGAN & TAMU VIP',
         certQuote: '"Semoga menjadi keluarga sakinah, mawaddah, warahmah, penuh tawa hangat dan keberkahan sepanjang masa!"',
         thumbArt: 'wedding_rings',
+        thumbPhotoUrl: '',
         charms: ['💍', '🕊️', '🥂', '✨', '💐', '🤍'],
         boxes: [
           {
@@ -1132,6 +1436,7 @@
             rarity: 'COMMON • 1:6',
             rarityBg: '#e4e4e7',
             art: 'first_date',
+            photoUrl: '',
             title: 'Awal Pertemuan Tak Terduga',
             note: 'Dari perkenalan sederhana hingga akhirnya mantap melangkah ke pelaminan.'
           },
@@ -1141,6 +1446,7 @@
             rarity: 'COMMON • 1:6',
             rarityBg: '#e4e4e7',
             art: 'goofy_duo',
+            photoUrl: '',
             title: 'Partner Seumur Hidup',
             note: 'Dua kepribadian unik yang saling melengkapi dalam suka maupun duka.'
           },
@@ -1150,6 +1456,7 @@
             rarity: 'RARE • 1:24',
             rarityBg: '#bae6fd',
             art: 'wedding_rings',
+            photoUrl: '',
             title: 'Janji Suci & Cincin Abadi',
             note: 'Simbol komitmen untuk selalu saling menjaga, menghargai, dan bertumbuh bersama.'
           },
@@ -1159,6 +1466,7 @@
             rarity: 'RARE • 1:24',
             rarityBg: '#bae6fd',
             art: 'midnight_karaoke',
+            photoUrl: '',
             title: 'Playlist Perjalanan Baru',
             note: 'Babak baru dimulai hari ini dengan sejuta rencana indah menanti di depan.'
           },
@@ -1168,6 +1476,7 @@
             rarity: 'ULTRA RARE • 1:72',
             rarityBg: '#fde047',
             art: 'gift_voucher',
+            photoUrl: '',
             title: 'VIP Souvenir & Honeymoon Pass',
             note: 'Tunjukkan kartu ini di meja penerima tamu atau simpan sebagai kenang-kenangan digital!'
           },
@@ -1177,6 +1486,7 @@
             rarity: 'SECRET • 1:144',
             rarityBg: '#fda4af',
             art: 'golden_wish',
+            photoUrl: '',
             title: 'Kartu Doa Restu Istimewa ✨',
             note: 'Selamat menempuh hidup baru! Semoga cinta kalian selalu bertumbuh hangat, rukun, dan bahagia selamanya.',
             isSecret: true
@@ -1408,7 +1718,7 @@
           state.synth.triggerAttackRelease(['F5', 'A5', 'C6'], '8n', now + 0.18);
           state.synth.triggerAttackRelease(['G5', 'B5', 'D6', 'G6'], '4n', now + 0.36);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function startBackgroundMelody() {
@@ -1570,7 +1880,7 @@
       document.getElementById('cert-main-title').textContent = preset.certTitle;
       document.getElementById('cert-recipient-name').textContent = state.customRecipient;
       document.getElementById('cert-verdict-quote').textContent = preset.certQuote;
-      document.getElementById('cert-photo-thumb').innerHTML = buildCollectorIllustration(preset.thumbArt, '#f59e0b');
+      document.getElementById('cert-photo-thumb').innerHTML = buildCollectorIllustration(preset.thumbArt, '#f59e0b', preset.thumbPhotoUrl);
     }
 
     // =========================================================================
@@ -1675,7 +1985,7 @@
               ${box.rarity.split('•')[0].trim()}
             </span>
             <div class="w-16 h-16 rounded-xl border-2 border-zinc-900 overflow-hidden mb-1.5">
-              ${buildCollectorIllustration(box.art, '#f59e0b')}
+              ${buildCollectorIllustration(box.art, '#f59e0b', box.photoUrl)}
             </div>
             <div class="font-display font-bold text-xs leading-tight line-clamp-1">${box.title}</div>
             <span class="font-mono text-[9px] text-emerald-700 font-bold mt-0.5">✓ TERBUKA</span>
@@ -1766,7 +2076,7 @@
 
         document.getElementById('scratch-reveal-content').innerHTML = `
           <div class="w-28 h-28 rounded-2xl border-2 border-zinc-900 overflow-hidden mb-2 shadow-sm">
-            ${buildCollectorIllustration(box.art, '#f59e0b')}
+            ${buildCollectorIllustration(box.art, '#f59e0b', box.photoUrl)}
           </div>
           <div class="font-display font-bold text-sm text-zinc-900 mb-1">${box.title}</div>
           <p class="text-[11px] leading-snug text-zinc-700 font-medium px-2">${finalSecretNote}</p>
@@ -1783,7 +2093,7 @@
       } else {
         scratchWrapper.classList.add('hidden');
         illustFrame.classList.remove('hidden');
-        illustFrame.innerHTML = buildCollectorIllustration(box.art, '#f59e0b');
+        illustFrame.innerHTML = buildCollectorIllustration(box.art, '#f59e0b', box.photoUrl);
 
         titleEl.textContent = box.title;
         noteEl.textContent = box.note;
@@ -2462,4 +2772,5 @@
     });
   </script>
 </body>
+
 </html>

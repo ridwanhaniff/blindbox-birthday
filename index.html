@@ -1,0 +1,2465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Blind Box Gacha & Uji Kelayakan</title>
+
+  <!-- Google Fonts: Fredoka (Comic/Collectible Display), Plus Jakarta Sans (Clean UI), Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Fredoka"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Tone.js for Procedural Pop/R&B BGM & Tactile Sound Effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <style>
+    /* =========================================================================
+       1. DESIGN TOKENS & 3-IN-1 EVENT THEME VARIABLES
+       ========================================================================= */
+    :root {
+      --bg-page: #fffbeb;
+      --bg-card: #ffffff;
+      --primary: #f59e0b;
+      --primary-dark: #d97706;
+      --accent: #ef4444;
+      --accent-soft: #fef3c7;
+      --ink: #18181b;
+      --border-ink: #18181b;
+      --halftone: rgba(245, 158, 11, 0.16);
+    }
+
+    body.theme-birthday {
+      --bg-page: #fffbeb;
+      --bg-card: #ffffff;
+      --primary: #f59e0b;
+      --primary-dark: #d97706;
+      --accent: #ef4444;
+      --accent-soft: #fef3c7;
+      --halftone: rgba(245, 158, 11, 0.16);
+    }
+
+    body.theme-anniv {
+      --bg-page: #fff0f5;
+      --bg-card: #ffffff;
+      --primary: #ff4d8d;
+      --primary-dark: #d92662;
+      --accent: #7c3aed;
+      --accent-soft: #ffe4ef;
+      --halftone: rgba(255, 77, 141, 0.14);
+    }
+
+    body.theme-wedding {
+      --bg-page: #fdfbf7;
+      --bg-card: #ffffff;
+      --primary: #d4af37;
+      --primary-dark: #a68523;
+      --accent: #2c4a3e;
+      --accent-soft: #f5efd7;
+      --halftone: rgba(212, 175, 55, 0.15);
+    }
+
+    /* =========================================================================
+       2. MANGA HALFTONE & COLLECTOR CARD STYLING
+       ========================================================================= */
+    body {
+      background-color: var(--bg-page);
+      background-image: radial-gradient(var(--halftone) 2px, transparent 2px);
+      background-size: 18px 18px;
+      color: var(--ink);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .comic-panel {
+      background: var(--bg-card);
+      border: 3px solid var(--border-ink);
+      box-shadow: 5px 5px 0px var(--border-ink);
+      border-radius: 22px;
+    }
+
+    .comic-panel-sm {
+      background: var(--bg-card);
+      border: 2.5px solid var(--border-ink);
+      box-shadow: 3px 3px 0px var(--border-ink);
+      border-radius: 16px;
+    }
+
+    .comic-btn {
+      border: 2.5px solid var(--border-ink);
+      box-shadow: 3px 3px 0px var(--border-ink);
+      transition: transform 0.14s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.14s ease, background-color 0.2s ease;
+      user-select: none;
+    }
+
+    .comic-btn:active {
+      transform: translate(2px, 2px) scale(0.97);
+      box-shadow: 1px 1px 0px var(--border-ink);
+    }
+
+    /* =========================================================================
+       3. MOTION CHOREOGRAPHY & COMIC ANIMATIONS
+       ========================================================================= */
+    @keyframes screenEnter {
+      0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+      70% { opacity: 1; transform: translateY(-3px) scale(1.01); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .screen-enter {
+      animation: screenEnter 0.46s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes boxWiggle {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      15% { transform: rotate(-2.5deg) translateY(-3px); }
+      30% { transform: rotate(2.5deg) translateY(-1px); }
+      45% { transform: rotate(-1.5deg) translateY(-2px); }
+      60% { transform: rotate(1.5deg) translateY(0); }
+      75% { transform: rotate(0deg); }
+    }
+    .blind-box-wiggle {
+      animation: boxWiggle 2.6s ease-in-out infinite;
+    }
+    .blind-box-wiggle:nth-child(2n) { animation-delay: 0.35s; }
+    .blind-box-wiggle:nth-child(3n) { animation-delay: 0.7s; }
+
+    @keyframes boxRipOpen {
+      0% { transform: scale(1) rotate(0deg); }
+      18% { transform: scale(1.1) rotate(-7deg); }
+      36% { transform: scale(1.14) rotate(7deg); }
+      54% { transform: scale(0.92) rotate(-4deg); }
+      76% { transform: scale(1.22) rotate(3deg); filter: brightness(1.18); }
+      100% { transform: scale(0.85) rotate(0deg); opacity: 0.35; }
+    }
+    .animate-box-rip {
+      animation: boxRipOpen 0.56s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+      pointer-events: none;
+    }
+
+    @keyframes cardFlipReveal {
+      0% {
+        opacity: 0;
+        transform: perspective(900px) rotateY(-88deg) scale(0.68) translateY(28px);
+      }
+      60% {
+        opacity: 1;
+        transform: perspective(900px) rotateY(10deg) scale(1.04) translateY(-4px);
+      }
+      82% {
+        transform: perspective(900px) rotateY(-4deg) scale(0.99);
+      }
+      100% {
+        opacity: 1;
+        transform: perspective(900px) rotateY(0deg) scale(1) translateY(0);
+      }
+    }
+    .animate-card-flip {
+      animation: cardFlipReveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes speedlineSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.06); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .manga-speedlines {
+      background: repeating-conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.22) 0deg 6deg,
+        transparent 6deg 16deg
+      );
+      animation: speedlineSpin 14s linear infinite;
+    }
+
+    @keyframes pinDotPop {
+      0% { transform: scale(0.5); }
+      65% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+    .pin-dot-pop {
+      animation: pinDotPop 0.26s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes errorShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px) rotate(-2deg); }
+      40% { transform: translateX(10px) rotate(2deg); }
+      60% { transform: translateX(-7px) rotate(-1deg); }
+      80% { transform: translateX(7px) rotate(1deg); }
+    }
+    .animate-error-shake {
+      animation: errorShake 0.42s ease-in-out;
+    }
+
+    @keyframes quizCardIn {
+      0% { opacity: 0; transform: translateX(42px) rotate(3deg) scale(0.94); }
+      100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+    }
+    @keyframes quizCardOut {
+      0% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: translateX(-50px) rotate(-5deg) scale(0.9); }
+    }
+    .quiz-card-enter {
+      animation: quizCardIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .quiz-card-exit {
+      animation: quizCardOut 0.24s ease-in forwards;
+      pointer-events: none;
+    }
+
+    @keyframes poofCloud {
+      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.4); }
+      60% { opacity: 0.85; transform: translate(-50%, -75%) scale(1.35); }
+      100% { opacity: 0; transform: translate(-50%, -100%) scale(1.7); }
+    }
+    .poof-cloud {
+      position: fixed;
+      pointer-events: none;
+      z-index: 60;
+      font-size: 26px;
+      animation: poofCloud 0.55s ease-out forwards;
+    }
+
+    @keyframes sparkleFloat {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(160deg); }
+    }
+    .scratch-sparkle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 30;
+      font-size: 14px;
+      animation: sparkleFloat 0.6s ease-out forwards;
+    }
+
+    @keyframes stampSlam {
+      0% { opacity: 0; transform: scale(2.8) rotate(-25deg); }
+      65% { opacity: 1; transform: scale(0.88) rotate(-10deg); }
+      85% { transform: scale(1.06) rotate(-13deg); }
+      100% { opacity: 1; transform: scale(1) rotate(-12deg); }
+    }
+    .animate-stamp-slam {
+      animation: stampSlam 0.58s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+    }
+
+    @keyframes shimmerSweep {
+      0% { transform: translateX(-140%) skewX(-20deg); }
+      100% { transform: translateX(240%) skewX(-20deg); }
+    }
+    .foil-shimmer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 100%
+      );
+      animation: shimmerSweep 3.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes scanLaser {
+      0%, 100% { top: 8%; }
+      50% { top: 88%; }
+    }
+    .scanner-laser {
+      animation: scanLaser 1.6s ease-in-out infinite;
+    }
+
+    @keyframes flameFlicker {
+      0%, 100% { transform: scale(1) rotate(-2deg); }
+      35% { transform: scale(1.09) rotate(3deg); }
+      70% { transform: scale(0.94) rotate(-1deg); }
+    }
+    .candle-flame {
+      animation: flameFlicker 0.6s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes smokeRise {
+      0% { opacity: 0.85; transform: translateY(0) scale(0.6); }
+      100% { opacity: 0; transform: translateY(-34px) scale(1.45); }
+    }
+    .candle-smoke {
+      animation: smokeRise 1.1s ease-out forwards;
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-9px) rotate(6deg); }
+    }
+    .float-charm {
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+
+    input[type="range"].love-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 14px;
+      border-radius: 999px;
+      border: 2.5px solid #18181b;
+      background: linear-gradient(90deg, #fecdd3 0%, var(--primary) 100%);
+      outline: none;
+    }
+    input[type="range"].love-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid #18181b;
+      box-shadow: 2px 2px 0px #18181b;
+      cursor: pointer;
+    }
+
+    .tilt-card {
+      transition: transform 0.16s ease-out;
+      will-change: transform;
+    }
+
+    @keyframes envelopeFloat {
+      0%, 100% { transform: translateY(0px) rotate(-1deg); }
+      50% { transform: translateY(-6px) rotate(1deg); }
+    }
+    .envelope-float {
+      animation: envelopeFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes welcomeDismiss {
+      0% { opacity: 1; transform: scale(1) translateY(0); }
+      100% { opacity: 0; transform: scale(1.08) translateY(-18px); }
+    }
+    .welcome-dismiss {
+      animation: welcomeDismiss 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="theme-birthday min-h-screen flex flex-col justify-between font-sans selection:bg-amber-200">
+
+  <!-- Native HTML5 Audio Element (100% anti-blokir di HP Android, iOS Safari & Browser TikTok/IG saat deploy) -->
+  <audio id="bgm-audio-element" loop preload="auto" playsinline></audio>
+
+  <!-- Real Music YouTube Player (berada di dalam area viewport dengan opacity sangat kecil agar tidak diblokir Chrome/Safari) -->
+  <div class="fixed bottom-2 right-2 w-[200px] h-[113px] opacity-[0.01] pointer-events-none overflow-hidden z-0" aria-hidden="true">
+    <div id="yt-bgm-player"></div>
+  </div>
+
+  <!-- Confetti Canvas Overlay -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Floating Decorative Manga Charms -->
+  <div id="ambient-charms" class="fixed inset-0 pointer-events-none overflow-hidden z-0 opacity-45"></div>
+
+  <!-- =========================================================================
+       INITIAL GREETING CARD POPUP (UNLOCKS LOOPED BGM ON FIRST TAP)
+       ========================================================================= -->
+  <div id="welcome-card-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/75 backdrop-blur-sm">
+    <div id="welcome-card-box" class="screen-enter w-full max-w-sm comic-panel p-5 sm:p-6 bg-white text-center relative overflow-hidden">
+      <!-- Top Decorative Ribbon -->
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border-2 border-zinc-900 font-mono text-[10px] font-bold uppercase tracking-wider mb-3" style="background-color: var(--accent-soft);">
+        <span>💌</span>
+        <span>SPECIAL GREETING CARD</span>
+      </div>
+
+      <!-- Greeting Card Illustration -->
+      <div class="envelope-float w-32 h-32 mx-auto my-2 rounded-2xl border-[2.5px] border-zinc-900 overflow-hidden shadow-sm bg-amber-50 flex items-center justify-center" id="welcome-card-art">
+        <svg viewBox="0 0 160 160" class="w-full h-full">
+          <rect width="160" height="160" fill="#fef3c7"/>
+          <rect x="22" y="42" width="116" height="82" rx="12" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
+          <path d="M22 48 L80 90 L138 48" fill="none" stroke="#18181b" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="80" cy="86" r="16" fill="#ef4444" stroke="#18181b" stroke-width="3.5"/>
+          <text x="80" y="92" text-anchor="middle" font-size="16">💖</text>
+          <text x="80" y="28" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="14" fill="#18181b">UNTUK KAMU ✨</text>
+        </svg>
+      </div>
+
+      <p class="font-mono text-[11px] font-bold text-zinc-500 uppercase mt-2">SPECIAL EDITION FOR</p>
+      <h2 id="welcome-recipient-name" class="font-display font-bold text-2xl sm:text-3xl text-zinc-900 mb-2">
+        Birthday Star
+      </h2>
+
+      <p id="welcome-greeting-text" class="text-xs sm:text-sm text-zinc-600 leading-relaxed mb-4 px-1">
+        Ada kapsul kejutan spesial & koleksi kartu kenangan yang sudah disiapkan khusus buat kamu hari ini!
+      </p>
+
+      <!-- Soundtrack Preview Pill -->
+      <div class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-zinc-100 border border-zinc-300 text-[11px] font-mono text-zinc-700 mb-4">
+        <span class="animate-pulse">🎵</span>
+        <span id="welcome-track-label" class="truncate font-bold">MMG (My Mine Gueh) - Naykilla</span>
+      </div>
+
+      <!-- Primary User-Gesture Button to Start Looped Audio & Enter -->
+      <button onclick="openWelcomeGreetingCard()" class="comic-btn w-full py-3.5 px-4 rounded-2xl text-white font-display font-bold text-sm sm:text-base tracking-wide flex items-center justify-center gap-2" style="background-color: var(--primary);">
+        <span>💌</span>
+        <span>BUKA KARTU & PUTAR MUSIK</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       TOP HEADER BAR (EDITION BADGE & AUDIO CONTROL)
+       ========================================================================= -->
+  <header class="relative z-40 w-full max-w-lg mx-auto px-4 pt-3">
+    <div class="comic-panel-sm px-3.5 py-2.5 flex items-center justify-between gap-2 bg-white/95 backdrop-blur-xs">
+      <!-- Series Badge -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span id="header-mode-emoji" class="text-xl shrink-0">🎂</span>
+        <div class="truncate">
+          <div id="header-series-title" class="font-display font-bold text-xs sm:text-sm leading-tight truncate">
+            Kidult Surprise Box: Level 22
+          </div>
+          <div id="header-track-name" class="font-mono text-[10px] text-zinc-500 truncate">
+            ♪ MMG (My Mine Gue) - Naykilla
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio Play/Pause Toggle -->
+      <div class="flex items-center shrink-0">
+        <button id="btn-audio-toggle" onclick="toggleAudio()" title="Putar / Hentikan Musik" class="comic-btn px-3 py-1.5 rounded-xl bg-amber-300 text-xs font-bold flex items-center gap-1.5">
+          <span id="audio-icon">🔇</span>
+          <span id="audio-label">Play BGM</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN INTERACTIVE STAGE (5 SEQUENTIAL SCREENS)
+       ========================================================================= -->
+  <main class="relative z-10 flex-1 w-full max-w-lg mx-auto px-4 py-4 flex flex-col justify-center">
+
+    <!-- ***********************************************************************
+         SCREEN 1: GERBANG KODE RAHASIA (SECRET PASSCODE GATE)
+         *********************************************************************** -->
+    <section id="screen-1" class="screen-enter w-full">
+      <div class="comic-panel p-5 sm:p-6 text-center relative overflow-hidden">
+        <!-- Comic Top Strip -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider border-2 border-zinc-900 mb-3" style="background-color: var(--accent-soft);">
+          <span>🔒</span>
+          <span>EDITION 01 • SECRET CAPSULE</span>
+        </div>
+
+        <h1 id="s1-main-title" class="font-display font-bold text-2xl sm:text-3xl tracking-tight leading-snug mb-1">
+          Kidult Surprise Box: Level 22
+        </h1>
+        <p id="s1-subtitle" class="text-xs sm:text-sm text-zinc-600 mb-4">
+          Masukkan <span class="font-bold text-zinc-900">4-digit PIN rahasia</span> untuk menyalakan mesin gacha & musik kejutan!
+        </p>
+
+        <!-- PIN Hint Pill -->
+        <button onclick="fillHintPin()" class="mb-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 border border-dashed border-zinc-400 text-[11px] font-mono text-zinc-700 transition">
+          <span>💡 Petunjuk PIN:</span>
+          <span id="s1-pin-hint" class="font-bold text-zinc-900 underline">2004 (Ketuk isi otomatis)</span>
+        </button>
+
+        <!-- 4-Digit PIN Display Boxes -->
+        <div id="pin-dots-container" class="flex justify-center gap-3 mb-5">
+          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-0">•</div>
+          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-1">•</div>
+          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-2">•</div>
+          <div class="pin-dot w-12 h-14 rounded-2xl border-[2.5px] border-zinc-900 bg-zinc-50 flex items-center justify-center font-display font-bold text-2xl shadow-inner" id="pin-dot-3">•</div>
+        </div>
+
+        <!-- Tactile Numeric Keypad -->
+        <div class="grid grid-cols-3 gap-2.5 max-w-[260px] mx-auto mb-4">
+          <button onclick="pressPinDigit('1')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">1</button>
+          <button onclick="pressPinDigit('2')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">2</button>
+          <button onclick="pressPinDigit('3')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">3</button>
+          <button onclick="pressPinDigit('4')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">4</button>
+          <button onclick="pressPinDigit('5')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">5</button>
+          <button onclick="pressPinDigit('6')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">6</button>
+          <button onclick="pressPinDigit('7')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">7</button>
+          <button onclick="pressPinDigit('8')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">8</button>
+          <button onclick="pressPinDigit('9')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">9</button>
+          <button onclick="clearPin()" class="comic-btn h-12 rounded-2xl bg-rose-100 hover:bg-rose-200 font-display font-bold text-xs uppercase text-rose-700">Clear</button>
+          <button onclick="pressPinDigit('0')" class="comic-btn h-12 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xl">0</button>
+          <button onclick="backspacePin()" class="comic-btn h-12 rounded-2xl bg-amber-100 hover:bg-amber-200 font-display font-bold text-lg">⌫</button>
+        </div>
+
+        <!-- Primary Unlock CTA -->
+        <button onclick="verifyPinAndEnter()" class="comic-btn w-full py-3.5 rounded-2xl text-white font-display font-bold text-base tracking-wide flex items-center justify-center gap-2" style="background-color: var(--primary);">
+          <span>BUKA MESIN BLIND BOX</span>
+          <span>⚡</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ***********************************************************************
+         SCREEN 2: LOBI KOTAK MISTERI (6-BOX COLLECTOR GRID)
+         *********************************************************************** -->
+    <section id="screen-2" class="hidden w-full">
+      <div class="comic-panel p-4 sm:p-5">
+        <!-- Header Status -->
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <div>
+            <span class="font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-zinc-900 text-white">STEP 02 • UNBOXING</span>
+            <h2 class="font-display font-bold text-xl sm:text-2xl mt-0.5">Pilih Kotak Misteri</h2>
+          </div>
+          <div class="comic-panel-sm px-3 py-1.5 text-center bg-amber-50">
+            <div class="font-mono text-[10px] text-zinc-500">TERBUKA</div>
+            <div id="box-progress-badge" class="font-display font-bold text-base text-zinc-900">0 / 6</div>
+          </div>
+        </div>
+
+        <p class="text-xs text-zinc-600 mb-3.5">
+          Ketuk semua kotak untuk mengoleksi kartu kenangan & temukan kartu <span class="font-bold text-amber-600">SECRET 1:144</span> berlapis gosok!
+        </p>
+
+        <!-- 6 Blind Boxes Grid -->
+        <div id="blind-box-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+          <!-- Dynamically populated by JS -->
+        </div>
+
+        <!-- Proceed to Quiz CTA -->
+        <button id="btn-proceed-quiz" onclick="goToQuizScreen()" disabled class="comic-btn w-full py-3.5 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center justify-center gap-2 disabled:opacity-45 disabled:cursor-not-allowed bg-zinc-900 text-white">
+          <span>LANJUT KE UJI KELAYAKAN</span>
+          <span>➡️</span>
+        </button>
+        <p id="quiz-lock-hint" class="text-center font-mono text-[11px] text-zinc-500 mt-2">
+          Buka ke-6 kotak misteri untuk membuka tahap berikutnya
+        </p>
+      </div>
+    </section>
+
+    <!-- ***********************************************************************
+         SCREEN 4: MINI-KUIS TOMBOL KABUR & LILIN HARAPAN BANDEL
+         *********************************************************************** -->
+    <section id="screen-4" class="hidden w-full">
+      <div class="comic-panel p-5 sm:p-6 relative overflow-visible">
+        <!-- Quiz Progress Header -->
+        <div class="flex items-center justify-between mb-3">
+          <span id="quiz-step-badge" class="font-mono text-xs font-bold px-2.5 py-1 rounded-lg border-2 border-zinc-900 bg-amber-200">
+            SOAL 1 / 5
+          </span>
+          <span id="quiz-mode-label" class="font-mono text-[11px] font-bold text-zinc-500 uppercase">
+            UJI KELAYAKAN
+          </span>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full h-3 bg-zinc-100 rounded-full border-2 border-zinc-900 overflow-hidden mb-5">
+          <div id="quiz-progress-fill" class="h-full transition-all duration-300" style="width: 20%; background-color: var(--primary);"></div>
+        </div>
+
+        <!-- Question Card Stage -->
+        <div id="quiz-card-stage" class="min-h-[250px] flex flex-col justify-between">
+          <!-- Rendered dynamically per question -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ***********************************************************************
+         SCREEN 5: LAYAR PEMINDAI & SERTIFIKAT KOLEKTOR HD
+         *********************************************************************** -->
+    <section id="screen-5" class="hidden w-full">
+      <!-- Scanner Sub-state -->
+      <div id="scanner-view" class="comic-panel p-6 text-center">
+        <div class="font-mono text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">
+          BIOMETRIC VIBE SCANNER
+        </div>
+        <h2 class="font-display font-bold text-2xl mb-4">Menganalisis Kelayakan...</h2>
+
+        <div class="relative w-44 h-44 mx-auto rounded-3xl border-[3px] border-zinc-900 bg-zinc-950 overflow-hidden flex items-center justify-center mb-4">
+          <span class="text-6xl animate-pulse">🪪</span>
+          <div class="scanner-laser absolute left-0 right-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399]"></div>
+          <div class="absolute inset-0 border-2 border-emerald-400/30 rounded-3xl"></div>
+        </div>
+
+        <div class="w-full max-w-xs mx-auto h-3 bg-zinc-100 rounded-full border-2 border-zinc-900 overflow-hidden mb-2">
+          <div id="scanner-progress-bar" class="h-full bg-emerald-400 transition-all duration-150" style="width: 0%;"></div>
+        </div>
+        <p id="scanner-status" class="font-mono text-xs text-zinc-600">Memverifikasi koleksi kartu & kejujuran jawaban...</p>
+      </div>
+
+      <!-- Final Certificate Sub-state -->
+      <div id="certificate-view" class="hidden screen-enter">
+        <div id="certificate-tilt-card" class="tilt-card foil-shimmer comic-panel p-5 sm:p-6 bg-white relative overflow-hidden mb-3.5">
+          <!-- Decorative Corner Ribbons -->
+          <div class="flex items-center justify-between border-b-2 border-dashed border-zinc-300 pb-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">🏆</span>
+              <div>
+                <div class="font-mono text-[10px] font-bold text-zinc-500 uppercase">OFFICIAL COLLECTOR PASS</div>
+                <div id="cert-main-title" class="font-display font-bold text-base sm:text-lg leading-tight">
+                  KARTU KOLEKTOR ULANG TAHUN
+                </div>
+              </div>
+            </div>
+            <!-- Animated Impact Stamp -->
+            <div id="cert-stamp-badge" class="animate-stamp-slam px-2.5 py-1 rounded-lg border-2 border-emerald-700 bg-emerald-100 text-emerald-800 font-mono font-bold text-xs">
+              GRADE A+
+            </div>
+          </div>
+
+          <!-- Collector Profile & Score -->
+          <div class="flex items-center gap-3.5 bg-zinc-50 p-3 rounded-2xl border-2 border-zinc-900 mb-3.5">
+            <div id="cert-photo-thumb" class="w-16 h-16 rounded-xl border-2 border-zinc-900 overflow-hidden shrink-0 bg-amber-100 flex items-center justify-center">
+              <!-- Populated SVG Avatar -->
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="font-mono text-[10px] text-zinc-500 uppercase">NAMA KOLEKTOR / PENERIMA</div>
+              <div id="cert-recipient-name" class="font-display font-bold text-lg truncate">Birthday Star</div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-200 border border-zinc-900">6/6 Kartu Lengkap</span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-rose-200 border border-zinc-900">Secret Unlocked</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Score & Grade Grid -->
+          <div class="grid grid-cols-2 gap-2.5 mb-3.5">
+            <div class="p-3 rounded-2xl border-2 border-zinc-900 text-center" style="background-color: var(--accent-soft);">
+              <div class="font-mono text-[10px] font-bold text-zinc-600">PREDIKAT KELULUSAN</div>
+              <div id="cert-grade-text" class="font-display font-bold text-3xl text-zinc-900">A+</div>
+            </div>
+            <div class="p-3 rounded-2xl border-2 border-zinc-900 bg-emerald-50 text-center">
+              <div class="font-mono text-[10px] font-bold text-zinc-600">SKOR KELAYAKAN</div>
+              <div id="cert-score-text" class="font-display font-bold text-3xl text-emerald-700">99.8%</div>
+            </div>
+          </div>
+
+          <!-- Official Verdict Quote -->
+          <div class="p-3 rounded-xl bg-zinc-900 text-white text-xs leading-relaxed mb-3">
+            <span class="font-mono text-[10px] text-amber-300 block mb-0.5">CATATAN RESMI KURATOR:</span>
+            <p id="cert-verdict-quote">"Resmi naik level dengan pesona maksimal, selera humor grade A+, dan dikelilingi orang-orang tersayang!"</p>
+          </div>
+
+          <!-- Serial Number & Date Stamp -->
+          <div class="flex items-center justify-between font-mono text-[10px] text-zinc-500">
+            <span id="cert-date-stamp">STAMP: 26 NOV 2026</span>
+            <span id="cert-serial-id">NO. #GBX-2026-144</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons: Download HD PNG & Replay -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <button onclick="downloadCertificatePNG()" class="comic-btn py-3.5 px-3 rounded-2xl text-white font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5" style="background-color: var(--primary);">
+            <span>📥</span>
+            <span>UNDUH SERTIFIKAT HD</span>
+          </button>
+          <button onclick="resetExperience(true)" class="comic-btn py-3.5 px-3 rounded-2xl bg-white hover:bg-zinc-50 font-display font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5">
+            <span>🔄</span>
+            <span>MAIN LAGI</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODAL: COLLECTOR CARD POP-UP & SCREEN 3 SCRATCH-TO-REVEAL
+       ========================================================================= -->
+  <div id="card-reveal-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop + Manga Speedlines -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-zinc-950/75 backdrop-blur-xs transition-opacity duration-300" onclick="closeCardModal()"></div>
+    <div id="modal-speedlines" class="manga-speedlines absolute inset-0 pointer-events-none opacity-80"></div>
+
+    <!-- Collector Card Container -->
+    <div id="modal-tilt-card" class="tilt-card animate-card-flip relative z-10 w-full max-w-sm comic-panel p-4 sm:p-5 bg-white">
+      <!-- Top Rarity Header -->
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <span id="modal-rarity-badge" class="px-3 py-1 rounded-full border-2 border-zinc-900 font-mono font-bold text-xs uppercase bg-amber-300">
+          COMMON • 1:6
+        </span>
+        <span id="modal-box-number" class="font-mono text-xs font-bold text-zinc-500">BOX #01</span>
+      </div>
+
+      <!-- Card Visual Stage (Normal Card OR Screen 3 Scratch-to-Reveal) -->
+      <div id="modal-card-visual-stage" class="relative w-full aspect-square rounded-2xl border-[2.5px] border-zinc-900 overflow-hidden bg-zinc-100 mb-3.5 select-none">
+        <!-- Standard Illustration Container -->
+        <div id="modal-illustration-frame" class="w-full h-full"></div>
+
+        <!-- Screen 3: Scratch-to-Reveal Overlay (Active only on Box #6 SECRET) -->
+        <div id="scratch-wrapper" class="hidden absolute inset-0">
+          <!-- Underlying Secret Content -->
+          <div id="scratch-reveal-content" class="w-full h-full flex flex-col items-center justify-center p-4 text-center bg-gradient-to-br from-amber-100 via-rose-100 to-purple-100">
+            <!-- Populated dynamically with Secret SVG + Special Note -->
+          </div>
+          <!-- Metallic Silver Foil Scratch Canvas -->
+          <canvas id="scratch-canvas" class="absolute inset-0 w-full h-full cursor-crosshair touch-none"></canvas>
+          <!-- Scratch Hint Pill -->
+          <div id="scratch-progress-pill" class="pointer-events-none absolute bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-zinc-900/90 text-white font-mono text-[11px] whitespace-nowrap shadow-md">
+            ✨ Gosok layar foil (<span id="scratch-pct-text">0%</span>)
+          </div>
+          <!-- Scratch Sparkle Layer -->
+          <div id="scratch-fx-layer" class="pointer-events-none absolute inset-0 overflow-hidden"></div>
+        </div>
+      </div>
+
+      <!-- Card Title & Personal Note -->
+      <div class="text-center">
+        <h3 id="modal-card-title" class="font-display font-bold text-xl mb-1">Judul Kartu</h3>
+        <p id="modal-card-note" class="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+          Catatan kenangan personal...
+        </p>
+      </div>
+
+      <!-- Collect & Close Button -->
+      <button id="btn-collect-card" onclick="closeCardModal()" class="comic-btn w-full mt-4 py-3 rounded-2xl text-white font-display font-bold text-sm" style="background-color: var(--accent);">
+        Simpan ke Koleksi ✓
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL: LILIN HARAPAN BANDEL (STUBBORN BIRTHDAY CANDLE BLACKOUT)
+       ========================================================================= -->
+  <div id="candle-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/95 transition-opacity duration-500">
+    <div class="w-full max-w-sm text-center text-white p-5 rounded-3xl border-2 border-amber-400/40 bg-zinc-900/90 shadow-[0_0_50px_rgba(245,158,11,0.22)]">
+      <div class="inline-block px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400 text-amber-300 font-mono text-[11px] mb-2">
+        🕯️ RITUAL LILIN HARAPAN BANDEL
+      </div>
+      <h3 class="font-display font-bold text-2xl mb-1">Make a Wish & Tiup Lilinnya!</h3>
+      <p id="candle-status-text" class="text-xs text-zinc-300 mb-5">
+        Pejamkan mata sejenak, ucapkan harapan terbaikmu, lalu ketuk tombol tiup di bawah!
+      </p>
+
+      <!-- Vector Birthday Cake & Animated Flame -->
+      <div class="relative w-52 h-48 mx-auto mb-5 flex flex-col items-center justify-end">
+        <!-- Ambient Glow -->
+        <div id="candle-glow" class="absolute top-2 w-28 h-28 rounded-full bg-amber-400/30 blur-xl transition-opacity duration-200"></div>
+
+        <!-- Flame SVG -->
+        <div id="candle-flame" class="candle-flame relative z-20 mb-[-4px] transition-all duration-150">
+          <svg width="34" height="48" viewBox="0 0 34 48">
+            <path d="M17 2 C25 14, 31 24, 27 36 C24 44, 10 44, 7 36 C3 24, 9 14, 17 2 Z" fill="#f59e0b" />
+            <path d="M17 12 C22 20, 25 27, 22 35 C20 40, 14 40, 12 35 C9 27, 12 20, 17 12 Z" fill="#fef08a" />
+          </svg>
+        </div>
+
+        <!-- Smoke Puff (Hidden until blown) -->
+        <div id="candle-smoke" class="hidden absolute top-4 text-2xl">💨</div>
+
+        <!-- Cake SVG -->
+        <svg width="180" height="115" viewBox="0 0 180 115" class="relative z-10">
+          <!-- Candle Stick -->
+          <rect x="83" y="4" width="14" height="32" rx="4" fill="#fff" stroke="#18181b" stroke-width="3" />
+          <path d="M83 12 L97 18 M83 22 L97 28" stroke="#ef4444" stroke-width="3" />
+          <!-- Top Cake Layer -->
+          <rect x="35" y="34" width="110" height="34" rx="12" fill="#fbcfe8" stroke="#18181b" stroke-width="3" />
+          <path d="M35 46 Q50 56 63 46 Q76 56 90 46 Q104 56 117 46 Q130 56 145 46 L145 38 Q145 34 135 34 L45 34 Q35 34 35 38 Z" fill="#fff" stroke="#18181b" stroke-width="2.5" />
+          <!-- Bottom Cake Layer -->
+          <rect x="20" y="66" width="140" height="38" rx="14" fill="#fde68a" stroke="#18181b" stroke-width="3" />
+          <!-- Plate -->
+          <rect x="10" y="102" width="160" height="9" rx="4.5" fill="#e4e4e7" stroke="#18181b" stroke-width="2.5" />
+          <!-- Sprinkles -->
+          <circle cx="55" cy="82" r="3" fill="#ef4444" />
+          <circle cx="90" cy="86" r="3" fill="#3b82f6" />
+          <circle cx="125" cy="81" r="3" fill="#10b981" />
+        </svg>
+      </div>
+
+      <div class="mb-3 font-mono text-xs text-amber-300" id="candle-attempts-badge">
+        Percobaan Tiupan: 0 / 3
+      </div>
+
+      <button id="btn-blow-candle" onclick="blowStubbornCandle()" class="comic-btn w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-zinc-950 font-display font-bold text-base">
+        🌬️ TIUP LILIN SEKARANG!
+      </button>
+    </div>
+  </div>
+
+  <!-- Custom Toast Notification (Replaces alert()) -->
+  <div id="toast-banner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 translate-y-3">
+    <div id="toast-text" class="comic-panel-sm px-4 py-2 bg-zinc-900 text-white font-sans font-semibold text-xs sm:text-sm whitespace-nowrap">
+      Notifikasi
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       APPLICATION SCRIPT: 3-IN-1 CONFIG, VECTOR ARTWORK, AUDIO & INTERACTIONS
+       ========================================================================= -->
+  <script>
+    // =========================================================================
+    // 1. FLAT COLLECTOR CARD VECTOR ARTWORK GENERATOR (MANGA / POP-ART STYLE)
+    // =========================================================================
+    function buildCollectorIllustration(artType, accentHex = '#f59e0b') {
+      const artworks = {
+        baby_photo: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#fef3c7"/>
+            <circle cx="120" cy="120" r="92" fill="#fde68a" stroke="#18181b" stroke-width="4" stroke-dasharray="10 6"/>
+            <rect x="48" y="34" width="144" height="172" rx="14" fill="#ffffff" stroke="#18181b" stroke-width="4"/>
+            <rect x="60" y="46" width="120" height="114" rx="8" fill="#bae6fd" stroke="#18181b" stroke-width="3"/>
+            <circle cx="120" cy="108" r="34" fill="#fed7aa" stroke="#18181b" stroke-width="3.5"/>
+            <path d="M96 86 Q120 62 144 86" fill="#18181b"/>
+            <circle cx="109" cy="106" r="4" fill="#18181b"/>
+            <circle cx="131" cy="106" r="4" fill="#18181b"/>
+            <circle cx="101" cy="116" r="5" fill="#fb7185" opacity="0.65"/>
+            <circle cx="139" cy="116" r="5" fill="#fb7185" opacity="0.65"/>
+            <path d="M111 120 Q120 130 129 120" fill="none" stroke="#18181b" stroke-width="3.5" stroke-linecap="round"/>
+            <text x="120" y="186" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="15" fill="#18181b">BOCIL ERA 2000s</text>
+          </svg>
+        `,
+        silly_selfie: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#ffe4e6"/>
+            <polygon points="120,16 146,72 208,62 168,112 214,162 152,168 140,226 102,178 44,204 68,144 20,104 82,84" fill="#fda4af" stroke="#18181b" stroke-width="3.5"/>
+            <circle cx="120" cy="122" r="54" fill="#fde047" stroke="#18181b" stroke-width="4"/>
+            <rect x="82" y="102" width="32" height="22" rx="6" fill="#18181b"/>
+            <rect x="126" y="102" width="32" height="22" rx="6" fill="#18181b"/>
+            <line x1="114" y1="112" x2="126" y2="112" stroke="#18181b" stroke-width="4"/>
+            <circle cx="94" cy="110" r="4" fill="#ffffff"/>
+            <circle cx="138" cy="110" r="4" fill="#ffffff"/>
+            <path d="M98 142 Q120 166 142 142 Z" fill="#ef4444" stroke="#18181b" stroke-width="3.5"/>
+            <text x="120" y="218" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="16" fill="#18181b">AIB TERBAIK 😂</text>
+          </svg>
+        `,
+        midnight_karaoke: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#ede9fe"/>
+            <circle cx="120" cy="120" r="88" fill="#c4b5fd" stroke="#18181b" stroke-width="4"/>
+            <path d="M92 156 L138 110 L152 124 L106 170 Z" fill="#3f3f46" stroke="#18181b" stroke-width="3.5"/>
+            <circle cx="152" cy="108" r="24" fill="#e4e4e7" stroke="#18181b" stroke-width="4"/>
+            <line x1="134" y1="90" x2="170" y2="126" stroke="#18181b" stroke-width="3.5"/>
+            <text x="58" y="76" font-size="28">🎵</text>
+            <text x="172" y="72" font-size="26">🎶</text>
+            <text x="64" y="192" font-size="24">✨</text>
+            <rect x="44" y="182" width="152" height="30" rx="10" fill="#ffffff" stroke="#18181b" stroke-width="3"/>
+            <text x="120" y="202" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="14" fill="#18181b">KONSER JAM 12 MALAM</text>
+          </svg>
+        `,
+        cake_disaster: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#e0f2fe"/>
+            <rect x="52" y="128" width="136" height="58" rx="14" fill="#fbcfe8" stroke="#18181b" stroke-width="4"/>
+            <path d="M52 146 Q74 162 96 146 Q120 164 144 146 Q166 162 188 146 L188 134 Q188 128 176 128 L64 128 Q52 128 52 134 Z" fill="#ffffff" stroke="#18181b" stroke-width="3"/>
+            <rect x="112" y="88" width="16" height="40" rx="4" fill="#fde047" stroke="#18181b" stroke-width="3.5"/>
+            <path d="M120 56 C130 70 134 80 120 88 C106 80 110 70 120 56 Z" fill="#f97316" stroke="#18181b" stroke-width="2.5"/>
+            <circle cx="80" cy="164" r="6" fill="#ef4444"/>
+            <circle cx="120" cy="168" r="6" fill="#3b82f6"/>
+            <circle cx="160" cy="164" r="6" fill="#10b981"/>
+            <text x="120" y="214" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="15" fill="#18181b">TRAGEDI KRIM KUE 🎂</text>
+          </svg>
+        `,
+        gift_voucher: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#dcfce7"/>
+            <rect x="34" y="68" width="172" height="104" rx="18" fill="#fde047" stroke="#18181b" stroke-width="4"/>
+            <line x1="86" y1="68" x2="86" y2="172" stroke="#18181b" stroke-width="3.5" stroke-dasharray="8 6"/>
+            <text x="60" y="130" text-anchor="middle" font-size="34">🎟️</text>
+            <text x="144" y="114" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="18" fill="#18181b">FREE TREAT</text>
+            <text x="144" y="140" text-anchor="middle" font-family="Space Mono, monospace" font-weight="bold" font-size="12" fill="#15803d">TRATIR MAKAN 1X</text>
+            <text x="120" y="206" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="14" fill="#18181b">VOUCHER ULTRA RARE</text>
+          </svg>
+        `,
+        golden_wish: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <defs>
+              <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="50%" stop-color="#f59e0b"/>
+                <stop offset="100%" stop-color="#fb7185"/>
+              </linearGradient>
+            </defs>
+            <rect width="240" height="240" fill="url(#goldGrad)"/>
+            <polygon points="120,26 144,82 204,88 158,128 172,188 120,156 68,188 82,128 36,88 96,82" fill="#ffffff" stroke="#18181b" stroke-width="4.5"/>
+            <text x="120" y="132" text-anchor="middle" font-size="44">👑</text>
+            <rect x="42" y="194" width="156" height="28" rx="10" fill="#18181b"/>
+            <text x="120" y="213" text-anchor="middle" font-family="Space Mono, monospace" font-weight="bold" font-size="12" fill="#fde047">SECRET WISH 1:144</text>
+          </svg>
+        `,
+        first_date: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#ffe4ef"/>
+            <circle cx="120" cy="116" r="78" fill="#fbcfe8" stroke="#18181b" stroke-width="4"/>
+            <path d="M120 162 C76 132 66 96 90 80 C104 70 116 82 120 92 C124 82 136 70 150 80 C174 96 164 132 120 162 Z" fill="#ff4d8d" stroke="#18181b" stroke-width="4"/>
+            <text x="120" y="214" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="16" fill="#18181b">FIRST DATE VIBES 💕</text>
+          </svg>
+        `,
+        goofy_duo: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#fef9c3"/>
+            <circle cx="88" cy="118" r="42" fill="#fde047" stroke="#18181b" stroke-width="4"/>
+            <circle cx="152" cy="118" r="42" fill="#93c5fd" stroke="#18181b" stroke-width="4"/>
+            <text x="88" y="130" text-anchor="middle" font-size="36">🤪</text>
+            <text x="152" y="130" text-anchor="middle" font-size="36">😎</text>
+            <text x="120" y="206" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="16" fill="#18181b">CHAOTIC DUO 100%</text>
+          </svg>
+        `,
+        wedding_rings: `
+          <svg viewBox="0 0 240 240" class="w-full h-full">
+            <rect width="240" height="240" fill="#f5efd7"/>
+            <circle cx="98" cy="126" r="42" fill="none" stroke="#d4af37" stroke-width="12"/>
+            <circle cx="98" cy="126" r="42" fill="none" stroke="#18181b" stroke-width="3"/>
+            <circle cx="142" cy="126" r="42" fill="none" stroke="#eab308" stroke-width="12"/>
+            <circle cx="142" cy="126" r="42" fill="none" stroke="#18181b" stroke-width="3"/>
+            <polygon points="142,64 156,78 142,92 128,78" fill="#bae6fd" stroke="#18181b" stroke-width="3"/>
+            <text x="120" y="208" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="16" fill="#18181b">FOREVER VOWS 💍</text>
+          </svg>
+        `
+      };
+
+      return artworks[artType] || artworks.golden_wish;
+    }
+
+    // =========================================================================
+    // 2. 3-IN-1 EVENT PRESETS MATRIX (BIRTHDAY, ANNIVERSARY, WEDDING)
+    // =========================================================================
+    const EVENT_PRESETS = {
+      birthday: {
+        themeClass: 'theme-birthday',
+        emoji: '🎂',
+        seriesName: 'Kidult Surprise Box',
+        defaultChapter: 'Level 22',
+        defaultPin: '2004',
+        defaultRecipient: 'Birthday Star',
+        trackTitle: 'MMG (My Mine Gueh) - Naykilla',
+        certTitle: 'KARTU KOLEKTOR ULANG TAHUN',
+        certQuote: '"Resmi naik level dengan pesona maksimal, selera humor grade A+, dan dikelilingi orang-orang tersayang!"',
+        thumbArt: 'golden_wish',
+        charms: ['🎂', '🎁', '🎈', '✨', '🥳', '⭐'],
+        boxes: [
+          {
+            id: 1,
+            label: 'BOX #01',
+            rarity: 'COMMON • 1:6',
+            rarityBg: '#e4e4e7',
+            art: 'baby_photo',
+            title: 'Arsip Bocil Legendaris',
+            note: 'Bukti autentik bahwa sejak kecil aura bintang utamanya sudah tidak terbantahkan lagi!'
+          },
+          {
+            id: 2,
+            label: 'BOX #02',
+            rarity: 'COMMON • 1:6',
+            rarityBg: '#e4e4e7',
+            art: 'silly_selfie',
+            title: 'Koleksi Aib Tanpa Filter',
+            note: 'Momen ketawa paling lepas tanpa jaim—karena sahabat sejati menyimpan foto aib sebagai bentuk kasih sayang.'
+          },
+          {
+            id: 3,
+            label: 'BOX #03',
+            rarity: 'RARE • 1:24',
+            rarityBg: '#bae6fd',
+            art: 'midnight_karaoke',
+            title: 'Konser Dadakan Tengah Malam',
+            note: 'Playlist wajib dan sesi curhat random yang selalu sukses bikin lupa capek.'
+          },
+          {
+            id: 4,
+            label: 'BOX #04',
+            rarity: 'RARE • 1:24',
+            rarityBg: '#bae6fd',
+            art: 'cake_disaster',
+            title: 'Tragedi Krim Kue',
+            note: 'Setiap ulang tahun selalu punya cerita seru yang bakal terus dikenang sampai puluhan tahun ke depan.'
+          },
+          {
+            id: 5,
+            label: 'BOX #05',
+            rarity: 'ULTRA RARE • 1:72',
+            rarityBg: '#fde047',
+            art: 'gift_voucher',
+            title: 'Voucher Traktiran Bebas Pilih',
+            note: 'Kartu sakti yang bisa diklaim 1x untuk jajanan atau kopi favoritmu hari ini!'
+          },
+          {
+            id: 6,
+            label: 'BOX #06',
+            rarity: 'SECRET • 1:144',
+            rarityBg: '#fda4af',
+            art: 'golden_wish',
+            title: 'Kado Utama & Doa Terbaik ✨',
+            note: 'Selamat ulang tahun! Semoga setiap langkah di usia baru ini dimudahkan, sehat selalu, dan semua wish list tahun ini terwujud satu per satu!',
+            isSecret: true
+          }
+        ],
+        quiz: [
+          {
+            type: 'dodge',
+            question: 'Di usia yang baru ini, janji bakal makin bahagia & kurangi overthinking tengah malam?',
+            yesText: 'Siap, Janji 100%! ✨',
+            noText: 'Masih hobi ovt 🙈'
+          },
+          {
+            type: 'choice',
+            question: 'Kalau dikasih satu kekuatan super di tahun ini, mau pilih yang mana?',
+            options: [
+              'Saldo rekening auto terisi tiap tanggal tua 💸',
+              'Makan banyak tengah malam tetap ideal 🍕',
+              'Semua wishlist langsung terwujud tanpa drama 🌟'
+            ]
+          },
+          {
+            type: 'slider',
+            question: 'Seberapa siap kamu menyambut petualangan seru di level usia baru ini?',
+            labelLow: 'Siap Banget!',
+            labelHigh: 'GAS FULL POWER 🚀'
+          },
+          {
+            type: 'candle',
+            question: 'Waktunya ritual tiup lilin! Siap membuat permohonan terbaikmu hari ini?',
+            yesText: '🕯️ NYALAKAN KUE & TIUP LILIN'
+          }
+        ]
+      },
+      anniversary: {
+        themeClass: 'theme-anniv',
+        emoji: '💖',
+        seriesName: 'Gacha Love Series',
+        defaultChapter: 'Chapter 03',
+        defaultPin: '1402',
+        defaultRecipient: 'My Favorite Person',
+        trackTitle: 'MMG (My Mine Gueh) - Naykilla',
+        certTitle: 'RAPOR KELULUSAN PACAR GRADE A+',
+        certQuote: '"Terbukti lolos uji kesabaran, kepekaan, dan kelucuan tanpa cela. Kontrak sayang otomatis diperpanjang seumur hidup!"',
+        thumbArt: 'first_date',
+        charms: ['💖', '💌', '🧸', '✨', '🍓', '💘'],
+        boxes: [
+          {
+            id: 1,
+            label: 'BOX #01',
+            rarity: 'COMMON • 1:6',
+            rarityBg: '#e4e4e7',
+            art: 'first_date',
+            title: 'Kencan Pertama Masih Canggung',
+            note: 'Dari yang awalnya masih malu-malu, sekarang sudah jadi rumah paling nyaman buat cerita apa saja.'
+          },
+          {
+            id: 2,
+            label: 'BOX #02',
+            rarity: 'COMMON • 1:6',
+            rarityBg: '#e4e4e7',
+            art: 'goofy_duo',
+            title: 'Mode Konyol Tanpa Jaim',
+            note: 'Terima kasih sudah selalu bisa diajak bercanda receh di tengah hari yang padat.'
+          },
+          {
+            id: 3,
+            label: 'BOX #03',
+            rarity: 'RARE • 1:24',
+            rarityBg: '#bae6fd',
+            art: 'midnight_karaoke',
+            title: 'Soundtrack Perjalanan Kita',
+            note: 'Setiap lagu yang kita putar bareng selalu punya cerita kecil yang bikin senyum sendiri.'
+          },
+          {
+            id: 4,
+            label: 'BOX #04',
+            rarity: 'RARE • 1:24',
+            rarityBg: '#bae6fd',
+            art: 'cake_disaster',
+            title: 'Debat Mau Makan Apa',
+            note: 'Pertanyaan klasik "terserah" yang ujung-ujungnya tetap selalu nemu tempat favorit berdua.'
+          },
+          {
+            id: 5,
+            label: 'BOX #05',
+            rarity: 'ULTRA RARE • 1:72',
+            rarityBg: '#fde047',
+            art: 'gift_voucher',
+            title: 'Golden Date Night Pass',
+            note: 'Kupon kencan spesial bebas request destinasi & menu favoritmu minggu ini!'
+          },
+          {
+            id: 6,
+            label: 'BOX #06',
+            rarity: 'SECRET • 1:144',
+            rarityBg: '#fda4af',
+            art: 'golden_wish',
+            title: 'Surat Cinta Rahasia 1:144 💌',
+            note: 'Terima kasih sudah bertahan, bertumbuh, dan terus memilih aku setiap hari. Selamat merayakan chapter baru kita!',
+            isSecret: true
+          }
+        ],
+        quiz: [
+          {
+            type: 'dodge',
+            question: 'Apakah kamu mengaku bahwa pasanganmu ini adalah orang paling menggemaskan sedunia?',
+            yesText: 'Iya, Fakta Mutlak! 💖',
+            noText: 'Enggak ah 😝'
+          },
+          {
+            type: 'choice',
+            question: 'Kalau lagi beda pendapat, jurus andalan paling ampuh adalah...',
+            options: [
+              'Peluk dulu baru ngobrol baik-baik 🤗',
+              'Langsung beliin makanan favorit 🧋',
+              'Kirim stiker lucu sampai ketawa bareng 😂'
+            ]
+          },
+          {
+            type: 'slider',
+            question: 'Tarik Love Meter di bawah untuk mengukur seberapa sayang kamu hari ini!',
+            labelLow: 'Sayang Banget',
+            labelHigh: 'INFINITY LOVE 💘'
+          }
+        ]
+      },
+      wedding: {
+        themeClass: 'theme-wedding',
+        emoji: '💍',
+        seriesName: 'Couple Blind Box',
+        defaultChapter: 'Wedding Edition',
+        defaultPin: '2611',
+        defaultRecipient: 'The Happy Couple',
+        trackTitle: 'MMG (My Mine Gueh) - Naykilla',
+        certTitle: 'SERTIFIKAT RESMI PASANGAN & TAMU VIP',
+        certQuote: '"Semoga menjadi keluarga sakinah, mawaddah, warahmah, penuh tawa hangat dan keberkahan sepanjang masa!"',
+        thumbArt: 'wedding_rings',
+        charms: ['💍', '🕊️', '🥂', '✨', '💐', '🤍'],
+        boxes: [
+          {
+            id: 1,
+            label: 'BOX #01',
+            rarity: 'COMMON • 1:6',
+            rarityBg: '#e4e4e7',
+            art: 'first_date',
+            title: 'Awal Pertemuan Tak Terduga',
+            note: 'Dari perkenalan sederhana hingga akhirnya mantap melangkah ke pelaminan.'
+          },
+          {
+            id: 2,
+            label: 'BOX #02',
+            rarity: 'COMMON • 1:6',
+            rarityBg: '#e4e4e7',
+            art: 'goofy_duo',
+            title: 'Partner Seumur Hidup',
+            note: 'Dua kepribadian unik yang saling melengkapi dalam suka maupun duka.'
+          },
+          {
+            id: 3,
+            label: 'BOX #03',
+            rarity: 'RARE • 1:24',
+            rarityBg: '#bae6fd',
+            art: 'wedding_rings',
+            title: 'Janji Suci & Cincin Abadi',
+            note: 'Simbol komitmen untuk selalu saling menjaga, menghargai, dan bertumbuh bersama.'
+          },
+          {
+            id: 4,
+            label: 'BOX #04',
+            rarity: 'RARE • 1:24',
+            rarityBg: '#bae6fd',
+            art: 'midnight_karaoke',
+            title: 'Playlist Perjalanan Baru',
+            note: 'Babak baru dimulai hari ini dengan sejuta rencana indah menanti di depan.'
+          },
+          {
+            id: 5,
+            label: 'BOX #05',
+            rarity: 'ULTRA RARE • 1:72',
+            rarityBg: '#fde047',
+            art: 'gift_voucher',
+            title: 'VIP Souvenir & Honeymoon Pass',
+            note: 'Tunjukkan kartu ini di meja penerima tamu atau simpan sebagai kenang-kenangan digital!'
+          },
+          {
+            id: 6,
+            label: 'BOX #06',
+            rarity: 'SECRET • 1:144',
+            rarityBg: '#fda4af',
+            art: 'golden_wish',
+            title: 'Kartu Doa Restu Istimewa ✨',
+            note: 'Selamat menempuh hidup baru! Semoga cinta kalian selalu bertumbuh hangat, rukun, dan bahagia selamanya.',
+            isSecret: true
+          }
+        ],
+        quiz: [
+          {
+            type: 'dodge',
+            question: 'Setuju kalau pasangan pengantin hari ini adalah duo paling serasi sepanjang tahun?',
+            yesText: 'Setuju Banget! 🥂',
+            noText: 'Ragu-ragu 🤔'
+          },
+          {
+            type: 'choice',
+            question: 'Doa terbaik apa yang paling cocok untuk babak baru pernikahan ini?',
+            options: [
+              'Selalu kompak & penuh tawa setiap hari 🏡',
+              'Rezeki lancar & honeymoon keliling dunia ✈️',
+              'Langgeng harmonis sampai kakek nenek 🤍'
+            ]
+          },
+          {
+            type: 'slider',
+            question: 'Kirimkan energi doa restu maksimal lewat slider kebahagiaan ini!',
+            labelLow: 'Bahagia Selalu',
+            labelHigh: 'SAKINAH MAWADDAH WARAHMAH 💍'
+          }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // 3. KONFIGURASI UTAMA (ATUR MODE, PIN, NAMA, LAGU ASLI & PESAN DI SINI)
+    // =========================================================================
+    const APP_CONFIG = {
+      mode: 'birthday', // Pilihan mode: 'birthday' | 'anniversary' | 'wedding'
+      pinCode: '2004', // PIN 4 digit untuk membuka gacha
+      chapterOrLevel: 'Level 22', // Subjudul acara (mis. 'Level 22', 'Chapter 03', 'Wedding Edition')
+      recipientName: 'Birthday Star', // Nama penerima pada kartu ucapan & sertifikat akhir
+      greetingCopy: 'Ada kapsul kejutan spesial & 6 kartu koleksi rahasia yang sudah disiapkan khusus buat kamu hari ini!',
+      songTitle: 'MMG (My Mine Gueh) - Naykilla', // Judul lagu asli yang tampil di header
+      // Urutan ID YouTube (versi audio/lirik/TikTok yang mendukung embed + cadangan otomatis)
+      youtubeVideoIds: ['Jg4uK1cJsTw', 'C2ClQNExMFY', 'ggw0prh6Fc8', 'X-JFCl84A2Q', 'GoH1eTynCPc', 'K-7olbaOelg'],
+      youtubeStartSeconds: 0, // Detik mulai lagu (mis. 0 atau 15 untuk langsung ke bagian hook)
+      audioUrl: '', // OPSIONAL (PALING STABIL): isi link/path file .mp3 asli (mis. './mmg-naykilla.mp3') agar kebal blokir embed YouTube
+      secretMessage: '' // Isi teks khusus di sini, atau biarkan kosong untuk memakai teks bawaan mode
+    };
+
+    const state = {
+      mode: APP_CONFIG.mode,
+      customPin: APP_CONFIG.pinCode,
+      customChapter: APP_CONFIG.chapterOrLevel,
+      customRecipient: APP_CONFIG.recipientName,
+      customSecretNote: APP_CONFIG.secretMessage,
+      customTrack: APP_CONFIG.songTitle,
+      pinInput: '',
+      openedBoxIds: new Set(),
+      activeModalBox: null,
+      scratchRevealed: false,
+      quizIndex: 0,
+      quizScore: 98,
+      loveMeterValue: 95,
+      candleAttempts: 0,
+      audioInitialized: false,
+      audioPlaying: false,
+      htmlAudio: null,
+      ytPlayer: null,
+      ytReady: false,
+      ytPendingPlay: false,
+      ytVideoIndex: 0,
+      ytAllFailed: false,
+      synth: null
+    };
+
+    // =========================================================================
+    // 4. REAL MUSIC PLAYER (NAYKILLA - MMG YOUTUBE / MP3) & TACTILE SFX ONLY
+    // =========================================================================
+    function sendRawYouTubeCommand(funcName, args = '') {
+      const container = document.getElementById('yt-bgm-player');
+      const iframe = container && container.tagName === 'IFRAME'
+        ? container
+        : container?.querySelector('iframe');
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func: funcName, args }),
+          '*'
+        );
+      }
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      const videoList = APP_CONFIG.youtubeVideoIds || [];
+      if (!videoList.length) {
+        state.ytAllFailed = true;
+        return;
+      }
+      const firstId = videoList[0];
+      const playerVars = {
+        autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        enablejsapi: 1,
+        fs: 0,
+        loop: 1,
+        playlist: firstId,
+        playsinline: 1,
+        rel: 0,
+        start: APP_CONFIG.youtubeStartSeconds || 0
+      };
+
+      state.ytPlayer = new YT.Player('yt-bgm-player', {
+        height: '135',
+        width: '240',
+        videoId: firstId,
+        playerVars,
+        events: {
+          onReady: (event) => {
+            state.ytReady = true;
+            const iframe = event.target.getIframe?.();
+            if (iframe) {
+              iframe.setAttribute('allow', 'autoplay; encrypted-media');
+            }
+            event.target.unMute();
+            event.target.setVolume(100);
+            if (state.ytPendingPlay) {
+              event.target.playVideo();
+              sendRawYouTubeCommand('unMute');
+              sendRawYouTubeCommand('playVideo');
+            }
+          },
+          onStateChange: (event) => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              state.audioPlaying = true;
+              state.ytPendingPlay = false;
+              updateAudioUI();
+            } else if (event.data === YT.PlayerState.PAUSED) {
+              state.audioPlaying = false;
+              updateAudioUI();
+            } else if (event.data === YT.PlayerState.ENDED) {
+              // Pastikan lagu asli terus berputar loop tanpa berhenti
+              event.target.seekTo(APP_CONFIG.youtubeStartSeconds || 0, true);
+              event.target.playVideo();
+            }
+          },
+          onError: () => {
+            const nextIdx = state.ytVideoIndex + 1;
+            if (nextIdx < videoList.length && state.ytPlayer) {
+              state.ytVideoIndex = nextIdx;
+              const nextId = videoList[nextIdx];
+              state.ytPlayer.loadVideoById({
+                videoId: nextId,
+                startSeconds: APP_CONFIG.youtubeStartSeconds || 0
+              });
+              if (state.ytPendingPlay) {
+                state.ytPlayer.unMute();
+                state.ytPlayer.playVideo();
+              }
+            } else {
+              state.ytAllFailed = true;
+              state.audioPlaying = false;
+              updateAudioUI();
+              if (state.ytPendingPlay) {
+                state.ytPendingPlay = false;
+                showToast('Embed YouTube diblokir hak cipta — isi file .mp3 di APP_CONFIG.audioUrl 🎵');
+              }
+            }
+          }
+        }
+      });
+    };
+
+    (function loadYouTubeApiScript() {
+      if (APP_CONFIG.youtubeVideoIds && APP_CONFIG.youtubeVideoIds.length && !window.YT) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        tag.onerror = () => {
+          state.ytAllFailed = true;
+        };
+        document.head.appendChild(tag);
+      }
+    })();
+
+    async function initAudioEngine() {
+      if (state.audioInitialized) return;
+
+      const audioEl = document.getElementById('bgm-audio-element');
+      if (APP_CONFIG.audioUrl && APP_CONFIG.audioUrl.trim() !== '' && audioEl) {
+        audioEl.src = APP_CONFIG.audioUrl.trim();
+        audioEl.loop = true;
+        audioEl.volume = 1.0;
+        state.htmlAudio = audioEl;
+      }
+
+      // Tone.js hanya dipakai untuk efek suara ketukan tombol singkat (bukan lagu latar)
+      try {
+        await Tone.start();
+        state.synth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.01, decay: 0.14, sustain: 0.12, release: 0.3 }
+        }).toDestination();
+        state.synth.volume.value = -10;
+        state.audioInitialized = true;
+      } catch (err) {
+        console.warn('SFX synth skipped:', err);
+      }
+    }
+
+    function playSfx(type) {
+      if (!state.audioInitialized || !state.synth) return;
+      const now = Tone.now();
+      try {
+        if (type === 'tap') {
+          state.synth.triggerAttackRelease('C6', '32n', now);
+        } else if (type === 'error') {
+          state.synth.triggerAttackRelease(['E3', 'Bb3'], '16n', now);
+        } else if (type === 'unlock') {
+          state.synth.triggerAttackRelease('C5', '16n', now);
+          state.synth.triggerAttackRelease('E5', '16n', now + 0.08);
+          state.synth.triggerAttackRelease('G5', '16n', now + 0.16);
+          state.synth.triggerAttackRelease('C6', '8n', now + 0.24);
+        } else if (type === 'rip') {
+          state.synth.triggerAttackRelease(['G4', 'D5'], '16n', now);
+          state.synth.triggerAttackRelease(['B4', 'G5'], '16n', now + 0.12);
+        } else if (type === 'dodge') {
+          state.synth.triggerAttackRelease('G5', '32n', now);
+          state.synth.triggerAttackRelease('D6', '32n', now + 0.06);
+        } else if (type === 'fanfare') {
+          state.synth.triggerAttackRelease(['C5', 'E5', 'G5'], '8n', now);
+          state.synth.triggerAttackRelease(['F5', 'A5', 'C6'], '8n', now + 0.18);
+          state.synth.triggerAttackRelease(['G5', 'B5', 'D6', 'G6'], '4n', now + 0.36);
+        }
+      } catch (e) {}
+    }
+
+    function startBackgroundMelody() {
+      // 1. Prioritas utama: file .mp3 asli jika diisi di APP_CONFIG.audioUrl
+      if (APP_CONFIG.audioUrl && APP_CONFIG.audioUrl.trim() !== '') {
+        const audioEl = document.getElementById('bgm-audio-element');
+        if (audioEl) {
+          if (!audioEl.src || !audioEl.src.includes(APP_CONFIG.audioUrl.trim())) {
+            audioEl.src = APP_CONFIG.audioUrl.trim();
+          }
+          audioEl.loop = true;
+          audioEl.volume = 1.0;
+          state.htmlAudio = audioEl;
+        }
+        state.htmlAudio.play().then(() => {
+          state.audioPlaying = true;
+          updateAudioUI();
+        }).catch(() => {
+          showToast('Ketuk tombol Play BGM di kanan atas untuk memulai lagu 🎵');
+        });
+        return;
+      }
+
+      // 2. Putar lagu asli Naykilla - MMG (My Mine Gueh) via YouTube Embed Loop
+      state.ytPendingPlay = true;
+      if (state.ytReady && state.ytPlayer && typeof state.ytPlayer.playVideo === 'function' && !state.ytAllFailed) {
+        try {
+          state.ytPlayer.unMute();
+          state.ytPlayer.setVolume(100);
+          state.ytPlayer.playVideo();
+          sendRawYouTubeCommand('unMute');
+          sendRawYouTubeCommand('playVideo');
+          state.audioPlaying = true;
+          updateAudioUI();
+        } catch (err) {
+          showToast('Ketuk tombol Play BGM di kanan atas untuk memulai lagu 🎵');
+        }
+      } else if (state.ytAllFailed) {
+        state.ytPendingPlay = false;
+        showToast('Embed YouTube diblokir hak cipta — isi file .mp3 di APP_CONFIG.audioUrl 🎵');
+      } else {
+        // Coba kirim perintah play ke iframe saat YouTube selesai memuat
+        sendRawYouTubeCommand('unMute');
+        sendRawYouTubeCommand('playVideo');
+      }
+    }
+
+    function toggleAudio() {
+      initAudioEngine();
+
+      if (APP_CONFIG.audioUrl && APP_CONFIG.audioUrl.trim() !== '' && state.htmlAudio) {
+        if (state.audioPlaying) {
+          state.htmlAudio.pause();
+          state.audioPlaying = false;
+        } else {
+          state.htmlAudio.play();
+          state.audioPlaying = true;
+        }
+        updateAudioUI();
+        return;
+      }
+
+      if (state.ytReady && state.ytPlayer && typeof state.ytPlayer.playVideo === 'function' && !state.ytAllFailed) {
+        if (state.audioPlaying) {
+          state.ytPendingPlay = false;
+          state.ytPlayer.pauseVideo();
+          sendRawYouTubeCommand('pauseVideo');
+          state.audioPlaying = false;
+        } else {
+          state.ytPlayer.unMute();
+          state.ytPlayer.setVolume(100);
+          state.ytPlayer.playVideo();
+          sendRawYouTubeCommand('unMute');
+          sendRawYouTubeCommand('playVideo');
+          state.audioPlaying = true;
+        }
+        updateAudioUI();
+      } else {
+        startBackgroundMelody();
+      }
+    }
+
+    function updateAudioUI() {
+      const btn = document.getElementById('btn-audio-toggle');
+      const icon = document.getElementById('audio-icon');
+      const label = document.getElementById('audio-label');
+      if (state.audioPlaying) {
+        icon.textContent = '🔊';
+        label.textContent = 'Loop ON';
+        btn.classList.remove('bg-amber-300');
+        btn.classList.add('bg-emerald-300');
+      } else {
+        icon.textContent = '🔇';
+        label.textContent = 'Play BGM';
+        btn.classList.remove('bg-emerald-300');
+        btn.classList.add('bg-amber-300');
+      }
+    }
+
+    // =========================================================================
+    // 4B. INITIAL GREETING CARD POPUP HANDLER
+    // =========================================================================
+    async function openWelcomeGreetingCard() {
+      await initAudioEngine();
+      startBackgroundMelody();
+      playSfx('unlock');
+      launchConfetti(55);
+
+      const modal = document.getElementById('welcome-card-modal');
+      const box = document.getElementById('welcome-card-box');
+      if (box) box.classList.add('welcome-dismiss');
+
+      setTimeout(() => {
+        if (modal) modal.classList.add('hidden');
+      }, 340);
+    }
+
+    // =========================================================================
+    // 5. APPLY CODE CONFIGURATION (APP_CONFIG -> DOM)
+    // =========================================================================
+    function switchEventMode(modeKey) {
+      const targetMode = EVENT_PRESETS[modeKey] ? modeKey : 'birthday';
+      state.mode = targetMode;
+      const preset = EVENT_PRESETS[targetMode];
+
+      document.body.className = `${preset.themeClass} min-h-screen flex flex-col justify-between font-sans selection:bg-amber-200`;
+
+      state.customPin = APP_CONFIG.pinCode || preset.defaultPin;
+      state.customChapter = APP_CONFIG.chapterOrLevel || preset.defaultChapter;
+      state.customRecipient = APP_CONFIG.recipientName || preset.defaultRecipient;
+      state.customSecretNote = APP_CONFIG.secretMessage || preset.boxes[5].note;
+      state.customTrack = APP_CONFIG.songTitle || preset.trackTitle;
+
+      applyConfigurationToDOM();
+      resetExperience(false);
+
+      if (state.audioPlaying) {
+        startBackgroundMelody();
+      }
+    }
+
+    function applyConfigurationToDOM() {
+      const preset = EVENT_PRESETS[state.mode];
+      const activeTrack = state.customTrack || preset.trackTitle;
+      document.getElementById('header-mode-emoji').textContent = preset.emoji;
+      document.getElementById('header-series-title').textContent = `${preset.seriesName}: ${state.customChapter}`;
+      document.getElementById('header-track-name').textContent = `♪ ${activeTrack}`;
+
+      const welcomeRecipient = document.getElementById('welcome-recipient-name');
+      const welcomeText = document.getElementById('welcome-greeting-text');
+      const welcomeTrack = document.getElementById('welcome-track-label');
+      if (welcomeRecipient) welcomeRecipient.textContent = state.customRecipient;
+      if (welcomeText && APP_CONFIG.greetingCopy) welcomeText.textContent = APP_CONFIG.greetingCopy;
+      if (welcomeTrack) welcomeTrack.textContent = activeTrack;
+
+      document.getElementById('s1-main-title').textContent = `${preset.seriesName}: ${state.customChapter}`;
+      document.getElementById('s1-pin-hint').textContent = `${state.customPin} (Ketuk isi otomatis)`;
+
+      document.getElementById('cert-main-title').textContent = preset.certTitle;
+      document.getElementById('cert-recipient-name').textContent = state.customRecipient;
+      document.getElementById('cert-verdict-quote').textContent = preset.certQuote;
+      document.getElementById('cert-photo-thumb').innerHTML = buildCollectorIllustration(preset.thumbArt, '#f59e0b');
+    }
+
+    // =========================================================================
+    // 6. SCREEN 1: SECRET PASSCODE GATE LOGIC
+    // =========================================================================
+    function pressPinDigit(digit) {
+      initAudioEngine();
+      if (state.pinInput.length >= 4) return;
+      state.pinInput += digit;
+      playSfx('tap');
+      renderPinDots(state.pinInput.length - 1);
+
+      if (state.pinInput.length === 4) {
+        setTimeout(() => verifyPinAndEnter(), 220);
+      }
+    }
+
+    function backspacePin() {
+      if (state.pinInput.length === 0) return;
+      state.pinInput = state.pinInput.slice(0, -1);
+      playSfx('tap');
+      renderPinDots(-1);
+    }
+
+    function clearPin() {
+      state.pinInput = '';
+      playSfx('tap');
+      renderPinDots(-1);
+    }
+
+    function fillHintPin() {
+      if (!state.audioPlaying) startBackgroundMelody();
+      initAudioEngine();
+      state.pinInput = state.customPin;
+      renderPinDots(3);
+      playSfx('tap');
+      setTimeout(() => verifyPinAndEnter(), 260);
+    }
+
+    function renderPinDots(popIndex) {
+      for (let i = 0; i < 4; i++) {
+        const dotEl = document.getElementById(`pin-dot-${i}`);
+        dotEl.classList.remove('pin-dot-pop');
+        if (i < state.pinInput.length) {
+          dotEl.textContent = state.pinInput[i];
+          dotEl.style.backgroundColor = 'var(--accent-soft)';
+          if (i === popIndex) {
+            void dotEl.offsetWidth;
+            dotEl.classList.add('pin-dot-pop');
+          }
+        } else {
+          dotEl.textContent = '•';
+          dotEl.style.backgroundColor = '#fafafa';
+        }
+      }
+    }
+
+    async function verifyPinAndEnter() {
+      if (!state.audioPlaying && state.pinInput === state.customPin) {
+        startBackgroundMelody();
+      }
+      await initAudioEngine();
+
+      if (state.pinInput !== state.customPin) {
+        playSfx('error');
+        const container = document.getElementById('pin-dots-container');
+        container.classList.remove('animate-error-shake');
+        void container.offsetWidth;
+        container.classList.add('animate-error-shake');
+        showToast(`PIN salah! Petunjuk: ketuk ${state.customPin} 💡`);
+        state.pinInput = '';
+        setTimeout(() => renderPinDots(-1), 360);
+        return;
+      }
+
+      playSfx('unlock');
+      launchConfetti(45);
+      showToast('Mesin Blind Box Aktif! Selamat Unboxing 🎉');
+
+      renderBlindBoxGrid();
+      switchScreen('screen-1', 'screen-2');
+    }
+
+    // =========================================================================
+    // 7. SCREEN 2 & 3: BLIND BOX GRID & SCRATCH-TO-REVEAL CANVAS
+    // =========================================================================
+    function renderBlindBoxGrid() {
+      const grid = document.getElementById('blind-box-grid');
+      const preset = EVENT_PRESETS[state.mode];
+      grid.innerHTML = '';
+
+      preset.boxes.forEach((box) => {
+        const isOpened = state.openedBoxIds.has(box.id);
+        const btn = document.createElement('button');
+        btn.id = `blind-box-btn-${box.id}`;
+        btn.onclick = () => handleBlindBoxTap(box);
+
+        if (isOpened) {
+          btn.className = 'comic-panel-sm p-2.5 flex flex-col items-center justify-between bg-white text-center transition hover:scale-[1.02]';
+          btn.innerHTML = `
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold border border-zinc-900 mb-1.5" style="background:${box.rarityBg}">
+              ${box.rarity.split('•')[0].trim()}
+            </span>
+            <div class="w-16 h-16 rounded-xl border-2 border-zinc-900 overflow-hidden mb-1.5">
+              ${buildCollectorIllustration(box.art, '#f59e0b')}
+            </div>
+            <div class="font-display font-bold text-xs leading-tight line-clamp-1">${box.title}</div>
+            <span class="font-mono text-[9px] text-emerald-700 font-bold mt-0.5">✓ TERBUKA</span>
+          `;
+        } else {
+          const isSecret = box.isSecret;
+          btn.className = `blind-box-wiggle comic-btn p-3 rounded-2xl flex flex-col items-center justify-between text-center relative overflow-hidden ${isSecret ? 'bg-gradient-to-br from-amber-200 via-rose-200 to-purple-200' : 'bg-white'}`;
+          btn.innerHTML = `
+            <div class="w-full flex items-center justify-between font-mono text-[9px] font-bold text-zinc-600 mb-1">
+              <span>${box.label}</span>
+              <span>${isSecret ? '★' : '?'}</span>
+            </div>
+            <!-- Closed Blind Box Packaging Vector -->
+            <div class="w-16 h-16 my-1 flex items-center justify-center">
+              <svg viewBox="0 0 80 80" class="w-full h-full drop-shadow-xs">
+                <rect x="14" y="20" width="52" height="48" rx="8" fill="${isSecret ? '#f59e0b' : '#38bdf8'}" stroke="#18181b" stroke-width="3.5"/>
+                <path d="M14 32 H66" stroke="#18181b" stroke-width="3"/>
+                <polygon points="14,20 24,10 56,10 66,20" fill="${isSecret ? '#fde047' : '#bae6fd'}" stroke="#18181b" stroke-width="3"/>
+                <text x="40" y="55" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="bold" font-size="22" fill="#18181b">?</text>
+              </svg>
+            </div>
+            <span class="px-2 py-0.5 rounded-md bg-zinc-900 text-white font-mono text-[9px] font-bold tracking-wider">
+              ${isSecret ? 'SECRET 1:144' : 'KETUK BUKA'}
+            </span>
+          `;
+        }
+
+        grid.appendChild(btn);
+      });
+
+      const openedCount = state.openedBoxIds.size;
+      document.getElementById('box-progress-badge').textContent = `${openedCount} / 6`;
+
+      const proceedBtn = document.getElementById('btn-proceed-quiz');
+      const lockHint = document.getElementById('quiz-lock-hint');
+      if (openedCount >= 6) {
+        proceedBtn.disabled = false;
+        proceedBtn.style.backgroundColor = 'var(--primary)';
+        lockHint.textContent = 'Semua 6 kartu terkoleksi! Siap lanjut ke Uji Kelayakan ✨';
+      } else {
+        proceedBtn.disabled = true;
+        proceedBtn.style.backgroundColor = '#18181b';
+        lockHint.textContent = `Buka ${6 - openedCount} kotak lagi untuk membuka tahap berikutnya`;
+      }
+    }
+
+    function handleBlindBoxTap(box) {
+      initAudioEngine();
+      const btn = document.getElementById(`blind-box-btn-${box.id}`);
+      const alreadyOpened = state.openedBoxIds.has(box.id);
+
+      if (!alreadyOpened && btn) {
+        playSfx('rip');
+        btn.classList.add('animate-box-rip');
+        setTimeout(() => {
+          openCardRevealModal(box);
+        }, 420);
+      } else {
+        playSfx('tap');
+        openCardRevealModal(box);
+      }
+    }
+
+    function openCardRevealModal(box) {
+      state.activeModalBox = box;
+      const modal = document.getElementById('card-reveal-modal');
+      const tiltCard = document.getElementById('modal-tilt-card');
+      const rarityBadge = document.getElementById('modal-rarity-badge');
+      const boxNumber = document.getElementById('modal-box-number');
+      const illustFrame = document.getElementById('modal-illustration-frame');
+      const scratchWrapper = document.getElementById('scratch-wrapper');
+      const titleEl = document.getElementById('modal-card-title');
+      const noteEl = document.getElementById('modal-card-note');
+      const collectBtn = document.getElementById('btn-collect-card');
+
+      tiltCard.classList.remove('animate-card-flip');
+      void tiltCard.offsetWidth;
+      tiltCard.classList.add('animate-card-flip');
+
+      rarityBadge.textContent = box.rarity;
+      rarityBadge.style.backgroundColor = box.rarityBg;
+      boxNumber.textContent = box.label;
+
+      if (box.isSecret) {
+        const finalSecretNote = state.customSecretNote || box.note;
+        illustFrame.classList.add('hidden');
+        scratchWrapper.classList.remove('hidden');
+
+        document.getElementById('scratch-reveal-content').innerHTML = `
+          <div class="w-28 h-28 rounded-2xl border-2 border-zinc-900 overflow-hidden mb-2 shadow-sm">
+            ${buildCollectorIllustration(box.art, '#f59e0b')}
+          </div>
+          <div class="font-display font-bold text-sm text-zinc-900 mb-1">${box.title}</div>
+          <p class="text-[11px] leading-snug text-zinc-700 font-medium px-2">${finalSecretNote}</p>
+        `;
+
+        titleEl.textContent = '??? KARTU SECRET 1:144 ???';
+        noteEl.textContent = 'Gosok lapisan foil perak di atas memakai jari / kursor untuk mengungkap isi rahasianya!';
+        collectBtn.textContent = 'Gosok Dulu Lapisan Foil ✨';
+        collectBtn.disabled = true;
+        collectBtn.classList.add('opacity-50');
+
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => initScratchCanvas(box));
+      } else {
+        scratchWrapper.classList.add('hidden');
+        illustFrame.classList.remove('hidden');
+        illustFrame.innerHTML = buildCollectorIllustration(box.art, '#f59e0b');
+
+        titleEl.textContent = box.title;
+        noteEl.textContent = box.note;
+        collectBtn.textContent = 'Simpan ke Koleksi ✓';
+        collectBtn.disabled = false;
+        collectBtn.classList.remove('opacity-50');
+
+        modal.classList.remove('hidden');
+        if (!state.openedBoxIds.has(box.id)) {
+          launchConfetti(28);
+        }
+      }
+    }
+
+    function closeCardModal() {
+      if (!state.activeModalBox) return;
+      if (state.activeModalBox.isSecret && !state.scratchRevealed) {
+        showToast('Gosok lapisan foil perak sampai terbuka dulu ya! ✨');
+        return;
+      }
+
+      state.openedBoxIds.add(state.activeModalBox.id);
+      state.activeModalBox = null;
+      document.getElementById('card-reveal-modal').classList.add('hidden');
+      playSfx('tap');
+      renderBlindBoxGrid();
+    }
+
+    // Screen 3: Interactive Metallic Foil Scratch Canvas
+    function initScratchCanvas(box) {
+      const canvas = document.getElementById('scratch-canvas');
+      const wrapper = document.getElementById('scratch-wrapper');
+      const pctText = document.getElementById('scratch-pct-text');
+      const progressPill = document.getElementById('scratch-progress-pill');
+
+      canvas.style.opacity = '1';
+      canvas.style.pointerEvents = 'auto';
+      progressPill.classList.remove('hidden');
+      pctText.textContent = '0%';
+
+      if (state.scratchRevealed) {
+        canvas.style.opacity = '0';
+        canvas.style.pointerEvents = 'none';
+        progressPill.classList.add('hidden');
+        unlockSecretCardDetails(box);
+        return;
+      }
+
+      const rect = wrapper.getBoundingClientRect();
+      const size = Math.max(240, Math.floor(rect.width || 280));
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, size, size);
+      grad.addColorStop(0, '#d4d4d8');
+      grad.addColorStop(0.35, '#f4f4f5');
+      grad.addColorStop(0.65, '#a1a1aa');
+      grad.addColorStop(1, '#e4e4e7');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+
+      ctx.strokeStyle = 'rgba(24, 24, 27, 0.14)';
+      ctx.lineWidth = 2;
+      for (let i = -size; i < size * 2; i += 18) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + size, size);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#18181b';
+      ctx.font = 'bold 16px "Fredoka", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✨ GOSOK DI SINI ✨', size / 2, size / 2 - 6);
+      ctx.font = 'bold 11px "Space Mono", monospace';
+      ctx.fillText('SECRET RARE 1:144', size / 2, size / 2 + 16);
+
+      let isDrawing = false;
+      let strokeCounter = 0;
+
+      function getPos(e) {
+        const bounds = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: ((clientX - bounds.left) / bounds.width) * canvas.width,
+          y: ((clientY - bounds.top) / bounds.height) * canvas.height,
+          relX: clientX - bounds.left,
+          relY: clientY - bounds.top
+        };
+      }
+
+      function spawnScratchSparkle(relX, relY) {
+        if (Math.random() > 0.35) return;
+        const fxLayer = document.getElementById('scratch-fx-layer');
+        const sp = document.createElement('span');
+        sp.className = 'scratch-sparkle';
+        sp.textContent = ['✨', '⭐', '💫'][Math.floor(Math.random() * 3)];
+        sp.style.left = `${relX}px`;
+        sp.style.top = `${relY}px`;
+        sp.style.setProperty('--dx', `${(Math.random() - 0.5) * 60}px`);
+        sp.style.setProperty('--dy', `${-20 - Math.random() * 35}px`);
+        fxLayer.appendChild(sp);
+        setTimeout(() => sp.remove(), 620);
+      }
+
+      function scratchAt(e) {
+        if (!isDrawing || state.scratchRevealed) return;
+        e.preventDefault();
+        const pos = getPos(e);
+
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 26, 0, Math.PI * 2);
+        ctx.fill();
+
+        spawnScratchSparkle(pos.relX, pos.relY);
+
+        strokeCounter++;
+        if (strokeCounter % 5 === 0) {
+          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          let cleared = 0;
+          const totalPixels = imgData.length / 4;
+          for (let i = 3; i < imgData.length; i += 32) {
+            if (imgData[i] === 0) cleared++;
+          }
+          const sampledTotal = totalPixels / 8;
+          const pct = Math.min(100, Math.round((cleared / sampledTotal) * 100));
+          pctText.textContent = `${pct}%`;
+
+          if (pct >= 45) {
+            state.scratchRevealed = true;
+            canvas.style.transition = 'opacity 0.45s ease';
+            canvas.style.opacity = '0';
+            canvas.style.pointerEvents = 'none';
+            progressPill.classList.add('hidden');
+            playSfx('fanfare');
+            launchConfetti(75);
+            unlockSecretCardDetails(box);
+          }
+        }
+      }
+
+      canvas.onpointerdown = (e) => { isDrawing = true; scratchAt(e); };
+      canvas.onpointermove = scratchAt;
+      window.onpointerup = () => { isDrawing = false; };
+      canvas.ontouchstart = (e) => { isDrawing = true; scratchAt(e); };
+      canvas.ontouchmove = scratchAt;
+      canvas.ontouchend = () => { isDrawing = false; };
+    }
+
+    function unlockSecretCardDetails(box) {
+      const finalSecretNote = state.customSecretNote || box.note;
+      document.getElementById('modal-card-title').textContent = box.title;
+      document.getElementById('modal-card-note').textContent = finalSecretNote;
+      const collectBtn = document.getElementById('btn-collect-card');
+      collectBtn.textContent = 'Simpan Kartu Secret ke Koleksi ✓';
+      collectBtn.disabled = false;
+      collectBtn.classList.remove('opacity-50');
+    }
+
+    // =========================================================================
+    // 8. SCREEN 4: MINI-KUIS TOMBOL KABUR & LILIN HARAPAN BANDEL
+    // =========================================================================
+    function goToQuizScreen() {
+      state.quizIndex = 0;
+      playSfx('tap');
+      switchScreen('screen-2', 'screen-4');
+      renderCurrentQuizQuestion();
+    }
+
+    function renderCurrentQuizQuestion() {
+      const preset = EVENT_PRESETS[state.mode];
+      const q = preset.quiz[state.quizIndex];
+      const total = preset.quiz.length;
+
+      document.getElementById('quiz-step-badge').textContent = `SOAL ${state.quizIndex + 1} / ${total}`;
+      document.getElementById('quiz-progress-fill').style.width = `${((state.quizIndex + 1) / total) * 100}%`;
+
+      const stage = document.getElementById('quiz-card-stage');
+      stage.classList.remove('quiz-card-exit');
+      stage.classList.add('quiz-card-enter');
+
+      if (q.type === 'dodge') {
+        stage.innerHTML = `
+          <div class="my-auto text-center py-2">
+            <div class="text-4xl mb-3">🤔</div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl leading-snug mb-6">${q.question}</h3>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 relative min-h-[110px]">
+              <button onclick="advanceQuiz(2)" class="comic-btn px-6 py-3.5 rounded-2xl text-white font-display font-bold text-sm sm:text-base w-full sm:w-auto z-10" style="background-color: var(--primary);">
+                ${q.yesText}
+              </button>
+              <button id="runaway-btn" onpointerdown="dodgeRunawayButton(event)" onmouseover="dodgeRunawayButton(event)" class="comic-btn px-5 py-3 rounded-2xl bg-zinc-100 text-zinc-700 font-display font-bold text-xs sm:text-sm">
+                ${q.noText}
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (q.type === 'choice') {
+        const optionsHtml = q.options.map((opt) => `
+          <button onclick="advanceQuiz(1)" class="comic-btn w-full p-3.5 rounded-2xl bg-white hover:bg-amber-50 text-left font-sans font-bold text-xs sm:text-sm flex items-center justify-between gap-2">
+            <span>${opt}</span>
+            <span class="text-base">👉</span>
+          </button>
+        `).join('');
+
+        stage.innerHTML = `
+          <div class="my-auto">
+            <h3 class="font-display font-bold text-xl leading-snug mb-4 text-center">${q.question}</h3>
+            <div class="space-y-2.5">${optionsHtml}</div>
+          </div>
+        `;
+      } else if (q.type === 'slider') {
+        stage.innerHTML = `
+          <div class="my-auto text-center py-2">
+            <div id="love-meter-emoji" class="text-5xl mb-2 transition-transform duration-150">💖</div>
+            <h3 class="font-display font-bold text-xl leading-snug mb-4">${q.question}</h3>
+            <div class="font-display font-bold text-3xl mb-3" style="color: var(--primary);">
+              <span id="love-meter-val">${state.loveMeterValue}</span>%
+            </div>
+            <input type="range" min="50" max="100" value="${state.loveMeterValue}" oninput="updateLoveMeter(this.value)" class="love-slider w-full mb-2" />
+            <div class="flex justify-between font-mono text-[10px] text-zinc-500 mb-5">
+              <span>${q.labelLow}</span>
+              <span>${q.labelHigh}</span>
+            </div>
+            <button onclick="advanceQuiz(2)" class="comic-btn w-full py-3.5 rounded-2xl text-white font-display font-bold text-sm sm:text-base" style="background-color: var(--primary);">
+              KUNCI JAWABAN INI ✓
+            </button>
+          </div>
+        `;
+      } else if (q.type === 'candle') {
+        stage.innerHTML = `
+          <div class="my-auto text-center py-3">
+            <div class="text-5xl mb-3 animate-bounce">🎂</div>
+            <h3 class="font-display font-bold text-xl sm:text-2xl leading-snug mb-4">${q.question}</h3>
+            <button onclick="openStubbornCandleModal()" class="comic-btn w-full py-4 rounded-2xl bg-zinc-900 text-amber-300 font-display font-bold text-base">
+              ${q.yesText}
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function dodgeRunawayButton(e) {
+      if (e) e.preventDefault();
+      const btn = document.getElementById('runaway-btn');
+      if (!btn) return;
+
+      playSfx('dodge');
+
+      const rect = btn.getBoundingClientRect();
+      const poof = document.createElement('div');
+      poof.className = 'poof-cloud';
+      poof.textContent = '💨';
+      poof.style.left = `${rect.left + rect.width / 2}px`;
+      poof.style.top = `${rect.top + rect.height / 2}px`;
+      document.body.appendChild(poof);
+      setTimeout(() => poof.remove(), 580);
+
+      const maxX = Math.min(130, window.innerWidth * 0.28);
+      const maxY = 75;
+      const randX = Math.round((Math.random() - 0.5) * 2 * maxX);
+      const randY = Math.round((Math.random() - 0.5) * 2 * maxY);
+      const randRot = Math.round((Math.random() - 0.5) * 24);
+
+      btn.style.transition = 'transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      btn.style.transform = `translate(${randX}px, ${randY}px) rotate(${randRot}deg)`;
+    }
+
+    function updateLoveMeter(val) {
+      state.loveMeterValue = Number(val);
+      document.getElementById('love-meter-val').textContent = val;
+      const emojiEl = document.getElementById('love-meter-emoji');
+      emojiEl.style.transform = `scale(${0.9 + (val - 50) / 100})`;
+      emojiEl.textContent = val >= 95 ? '💘' : val >= 75 ? '💖' : '💓';
+    }
+
+    function advanceQuiz(bonusPoints) {
+      playSfx('tap');
+      state.quizScore = Math.min(100, state.quizScore + bonusPoints);
+      const stage = document.getElementById('quiz-card-stage');
+      stage.classList.remove('quiz-card-enter');
+      stage.classList.add('quiz-card-exit');
+
+      setTimeout(() => {
+        const preset = EVENT_PRESETS[state.mode];
+        if (state.quizIndex + 1 < preset.quiz.length) {
+          state.quizIndex++;
+          renderCurrentQuizQuestion();
+        } else {
+          startScannerSequence();
+        }
+      }, 220);
+    }
+
+    // Stubborn Birthday Candle Interaction (Lilin Harapan Bandel)
+    function openStubbornCandleModal() {
+      state.candleAttempts = 0;
+      document.getElementById('candle-attempts-badge').textContent = 'Percobaan Tiupan: 0 / 3';
+      document.getElementById('candle-status-text').textContent =
+        'Pejamkan mata sejenak, ucapkan harapan terbaikmu, lalu ketuk tombol tiup di bawah!';
+      document.getElementById('candle-flame').style.opacity = '1';
+      document.getElementById('candle-flame').style.transform = 'scale(1)';
+      document.getElementById('candle-glow').style.opacity = '1';
+      document.getElementById('candle-smoke').classList.add('hidden');
+      document.getElementById('candle-modal').classList.remove('hidden');
+      playSfx('tap');
+    }
+
+    function blowStubbornCandle() {
+      state.candleAttempts++;
+      const flame = document.getElementById('candle-flame');
+      const glow = document.getElementById('candle-glow');
+      const smoke = document.getElementById('candle-smoke');
+      const statusText = document.getElementById('candle-status-text');
+      const badge = document.getElementById('candle-attempts-badge');
+      const btn = document.getElementById('btn-blow-candle');
+
+      badge.textContent = `Percobaan Tiupan: ${state.candleAttempts} / 3`;
+
+      if (state.candleAttempts < 3) {
+        playSfx('dodge');
+        flame.style.opacity = '0';
+        glow.style.opacity = '0';
+        smoke.classList.remove('hidden');
+        btn.disabled = true;
+
+        setTimeout(() => {
+          smoke.classList.add('hidden');
+          flame.style.opacity = '1';
+          glow.style.opacity = '1';
+          btn.disabled = false;
+          statusText.textContent =
+            state.candleAttempts === 1
+              ? 'Eits! Lilinnya bandel nyala lagi! Harapannya kurang kencang tuh, tiup sekali lagi! 😜'
+              : 'Waduh nyala lagi! Satu tiupan pamungkas penuh semangat biar harapannya langsung tembus langit! 🔥';
+        }, 750);
+      } else {
+        playSfx('fanfare');
+        flame.style.opacity = '0';
+        glow.style.opacity = '0';
+        smoke.classList.remove('hidden');
+        statusText.textContent = 'Yeay! Lilin padam & semua harapan resmi terkirim! 🎉';
+        btn.disabled = true;
+
+        setTimeout(() => {
+          document.getElementById('candle-modal').classList.add('hidden');
+          btn.disabled = false;
+          startScannerSequence();
+        }, 1050);
+      }
+    }
+
+    // =========================================================================
+    // 9. SCREEN 5: BIOMETRIC SCANNER & HD COLLECTOR CERTIFICATE GENERATOR
+    // =========================================================================
+    function startScannerSequence() {
+      switchScreen('screen-4', 'screen-5');
+      document.getElementById('scanner-view').classList.remove('hidden');
+      document.getElementById('certificate-view').classList.add('hidden');
+
+      const bar = document.getElementById('scanner-progress-bar');
+      const status = document.getElementById('scanner-status');
+      let progress = 0;
+
+      const messages = [
+        'Memindai 6 kartu blind box...',
+        'Menghitung indeks kepekaan & kejujuran...',
+        'Mencetak stempel Grade A+ Resmi...'
+      ];
+
+      const interval = setInterval(() => {
+        progress += 10;
+        bar.style.width = `${progress}%`;
+        if (progress === 30) status.textContent = messages[0];
+        if (progress === 60) status.textContent = messages[1];
+        if (progress === 90) status.textContent = messages[2];
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => revealFinalCertificate(), 280);
+        }
+      }, 150);
+    }
+
+    function revealFinalCertificate() {
+      document.getElementById('scanner-view').classList.add('hidden');
+      document.getElementById('certificate-view').classList.remove('hidden');
+
+      const finalPct = (98.5 + (state.loveMeterValue / 100) * 1.4).toFixed(1);
+      document.getElementById('cert-score-text').textContent = `${finalPct}%`;
+
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+      document.getElementById('cert-date-stamp').textContent = `STAMP: ${dateStr}`;
+      document.getElementById('cert-serial-id').textContent = `NO. #GBX-${now.getFullYear()}-144`;
+
+      playSfx('fanfare');
+      launchConfetti(110);
+    }
+
+    // High-Resolution 1080x1350 PNG Exporter for Instagram / TikTok Story
+    function downloadCertificatePNG() {
+      playSfx('tap');
+      const preset = EVENT_PRESETS[state.mode];
+      const exportCanvas = document.createElement('canvas');
+      exportCanvas.width = 1080;
+      exportCanvas.height = 1350;
+      const ctx = exportCanvas.getContext('2d');
+
+      const bgColors = { birthday: '#fffbeb', anniv: '#fff0f5', wedding: '#fdfbf7' };
+      const primaryColors = { birthday: '#f59e0b', anniv: '#ff4d8d', wedding: '#d4af37' };
+      const bgHex = bgColors[state.mode] || '#fffbeb';
+      const priHex = primaryColors[state.mode] || '#f59e0b';
+
+      ctx.fillStyle = bgHex;
+      ctx.fillRect(0, 0, 1080, 1350);
+
+      ctx.fillStyle = priHex + '28';
+      for (let x = 30; x < 1080; x += 36) {
+        for (let y = 30; y < 1350; y += 36) {
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      ctx.fillStyle = '#18181b';
+      roundRect(ctx, 84, 104, 924, 1154, 44);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#18181b';
+      ctx.lineWidth = 8;
+      roundRect(ctx, 72, 92, 924, 1154, 44);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = priHex;
+      roundRect(ctx, 116, 136, 836, 130, 26);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 26px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('OFFICIAL COLLECTOR EDITION • 1:144 UNLOCKED', 534, 186);
+      ctx.font = 'bold 40px sans-serif';
+      ctx.fillText(`${preset.seriesName.toUpperCase()}: ${state.customChapter.toUpperCase()}`, 534, 238);
+
+      ctx.fillStyle = '#18181b';
+      ctx.font = 'bold 42px sans-serif';
+      ctx.fillText(preset.certTitle, 534, 345);
+
+      ctx.fillStyle = '#f4f4f5';
+      roundRect(ctx, 136, 390, 796, 175, 28);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#71717a';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText('NAMA KOLEKTOR / PENERIMA', 534, 445);
+      ctx.fillStyle = '#18181b';
+      ctx.font = 'bold 54px sans-serif';
+      ctx.fillText(state.customRecipient, 534, 515);
+
+      ctx.fillStyle = '#fef3c7';
+      roundRect(ctx, 136, 605, 380, 210, 28);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#52525b';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText('PREDIKAT', 326, 660);
+      ctx.fillStyle = '#18181b';
+      ctx.font = 'bold 92px sans-serif';
+      ctx.fillText('A+', 326, 765);
+
+      const scoreStr = document.getElementById('cert-score-text').textContent;
+      ctx.fillStyle = '#d1fae5';
+      roundRect(ctx, 552, 605, 380, 210, 28);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#52525b';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText('SKOR KELAYAKAN', 742, 660);
+      ctx.fillStyle = '#047857';
+      ctx.font = 'bold 82px sans-serif';
+      ctx.fillText(scoreStr, 742, 765);
+
+      ctx.fillStyle = '#18181b';
+      roundRect(ctx, 136, 855, 796, 230, 28);
+      ctx.fill();
+
+      ctx.fillStyle = '#fde047';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText('CATATAN RESMI KURATOR:', 534, 910);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 28px sans-serif';
+      wrapCanvasText(ctx, preset.certQuote, 534, 965, 720, 40);
+
+      ctx.fillStyle = '#71717a';
+      ctx.font = 'bold 24px monospace';
+      ctx.fillText(document.getElementById('cert-date-stamp').textContent, 310, 1175);
+      ctx.fillText(document.getElementById('cert-serial-id').textContent, 760, 1175);
+
+      const link = document.createElement('a');
+      link.download = `Sertifikat-Kolektor-${state.mode.toUpperCase()}-HD.png`;
+      link.href = exportCanvas.toDataURL('image/png');
+      link.click();
+
+      showToast('Sertifikat Kolektor HD (PNG) berhasil diunduh! 📥');
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+          ctx.fillText(line.trim(), x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line.trim(), x, y);
+    }
+
+    // =========================================================================
+    // 10. 3D INTERACTIVE POINTER TILT & AMBIENT EFFECTS
+    // =========================================================================
+    function attach3DTiltEffect(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+
+      el.addEventListener('pointermove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        el.style.transform = `perspective(900px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+      });
+
+      el.addEventListener('pointerleave', () => {
+        el.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    function initAmbientCharms() {
+      const container = document.getElementById('ambient-charms');
+      const charms = EVENT_PRESETS[state.mode].charms;
+      container.innerHTML = '';
+      for (let i = 0; i < 12; i++) {
+        const span = document.createElement('span');
+        span.className = 'float-charm absolute text-2xl select-none';
+        span.textContent = charms[i % charms.length];
+        span.style.left = `${(i * 19 + 7) % 94}%`;
+        span.style.top = `${(i * 23 + 11) % 90}%`;
+        span.style.animationDelay = `${(i * 0.45).toFixed(2)}s`;
+        container.appendChild(span);
+      }
+    }
+
+    function launchConfetti(count = 60) {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#f59e0b', '#ef4444', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6'];
+      const particles = Array.from({ length: count }, () => ({
+        x: canvas.width / 2 + (Math.random() - 0.5) * 160,
+        y: canvas.height * 0.42,
+        vx: (Math.random() - 0.5) * 14,
+        vy: -Math.random() * 13 - 4,
+        size: Math.random() * 8 + 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rot: Math.random() * 360,
+        vRot: (Math.random() - 0.5) * 14
+      }));
+
+      let frame = 0;
+      function animateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.42;
+          p.rot += p.vRot;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rot * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+          ctx.restore();
+        });
+
+        frame++;
+        if (frame < 95) {
+          requestAnimationFrame(animateConfetti);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animateConfetti();
+    }
+
+    // =========================================================================
+    // 11. NAVIGATION & RESET HELPERS
+    // =========================================================================
+    function switchScreen(fromId, toId) {
+      document.getElementById(fromId).classList.add('hidden');
+      const next = document.getElementById(toId);
+      next.classList.remove('hidden');
+      next.classList.remove('screen-enter');
+      void next.offsetWidth;
+      next.classList.add('screen-enter');
+    }
+
+    function resetExperience(withSound = true) {
+      if (withSound) playSfx('tap');
+      state.pinInput = '';
+      state.openedBoxIds.clear();
+      state.activeModalBox = null;
+      state.scratchRevealed = false;
+      state.quizIndex = 0;
+      state.quizScore = 98;
+      state.candleAttempts = 0;
+
+      renderPinDots(-1);
+      ['screen-2', 'screen-4', 'screen-5'].forEach((id) => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      const s1 = document.getElementById('screen-1');
+      s1.classList.remove('hidden');
+      s1.classList.remove('screen-enter');
+      void s1.offsetWidth;
+      s1.classList.add('screen-enter');
+      initAmbientCharms();
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      document.getElementById('toast-text').textContent = msg;
+      banner.classList.remove('opacity-0', 'translate-y-3');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.remove('opacity-100', 'translate-y-0');
+        banner.classList.add('opacity-0', 'translate-y-3');
+      }, 2600);
+    }
+
+    // Boot Application on Load using APP_CONFIG
+    window.addEventListener('DOMContentLoaded', () => {
+      switchEventMode(APP_CONFIG.mode);
+      initAmbientCharms();
+      attach3DTiltEffect('modal-tilt-card');
+      attach3DTiltEffect('certificate-tilt-card');
+    });
+  </script>
+</body>
+</html>
